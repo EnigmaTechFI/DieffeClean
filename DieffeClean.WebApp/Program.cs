@@ -31,11 +31,13 @@ try
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlServer(Configuration.GetConnectionString("DieffeCleanConnection"))); // per entity framework
     
+    
     var emailConfig = Configuration
         .GetSection("EmailConfiguration")
         .Get<EmailConfiguration>();
     
     builder.Services.AddSingleton(emailConfig);
+    builder.Services.AddTransient<IEmailSender, EmailSender>();
 
     builder.Services.AddIdentity<MyUser, IdentityRole>(opts =>
         {
@@ -94,7 +96,7 @@ try
 
     app.MapControllerRoute(
         name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
+        pattern: "{controller=Auth}/{action=Login}");
     
     var serviceProvider = builder.Services.BuildServiceProvider();
     var userManager = serviceProvider.GetService<UserManager<MyUser>>();
