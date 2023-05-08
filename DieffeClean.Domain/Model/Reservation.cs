@@ -13,4 +13,5 @@ public class Reservation
     public bool CheckInAllDay { get; set; }
     public DateTime CheckOut { get; set; }
     public bool CheckOutAllDay { get; set; }
+    public int NumberGuests { get; set; }
 }

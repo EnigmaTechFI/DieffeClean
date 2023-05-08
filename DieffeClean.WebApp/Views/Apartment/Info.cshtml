@@ -1,0 +1,80 @@
+@model DieffeClean.Presentation.Model.Apartment.CreateApartmentViewModel
+
+@{
+    ViewData["Title"] = "Registra appartamento";
+}
+
+<div class="header pb-6 d-flex align-items-center bg-dieffe" style="min-height: 150px; ">
+<!-- Mask -->
+    <span class="mask  opacity-8"></span>
+    <!-- Header container -->
+    <div class="container-fluid d-flex align-items-center">
+    <div class="row">
+        <div style="position: relative; left: 5%;">
+        <h2 style="color: white;">Appartamento</h2>
+        </div>
+    </div>
+    </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--6">
+    <div class="row">
+        <div class="col-xl-8-a">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                    <div class="col-8">
+                        <h3 class="mb-0">Dettagli appartamento</h3>
+                    </div>
+                    <div class="col-4 text-right">
+                        <a asp-action="Update" method="get" asp-route-id="@Model.Apartment.Id" type="button" class="btn btn-sm btn-dieffe">Modifica</a>
+                    </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h6 class="heading-small text-muted mb-4">Dati appartamento</h6>
+                    <div class="pl-lg-4">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                <label class="form-control-label" for="input-name">Nome dell'appartamento </label>
+                                <input asp-for="Apartment.Name" type="text" id="input-name" class="form-control" readonly>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                <label class="form-control-label" for="input-city">Indirizzo</label>
+                                <input asp-for="Apartment.Address" type="text" id="input-address" class="form-control" readonly>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                <label class="form-control-label" for="input-city">Nazione</label>
+                                <input asp-for="Apartment.Nation" type="text" id="input-nation" class="form-control" readonly>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                <label class="form-control-label" for="input-province">Provincia</label>
+                                <input asp-for="Apartment.Province" type="text" id="input-province" class="form-control" readonly>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                <label class="form-control-label" for="input-city">Città</label>
+                                <input asp-for="Apartment.City" type="text" id="input-city" class="form-control" readonly>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                <label class="form-control-label" for="input-cap">Codice Postale</label>
+                                <input asp-for="Apartment.ZipCode" type="text" id="input-cap" class="form-control" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

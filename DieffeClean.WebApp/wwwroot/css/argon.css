@@ -99,6 +99,64 @@ body
     background-color: #f8f9fe;
 }
 
+.bg-dieffe
+{
+    background-color: #3dd2ff !important;
+}
+
+.btn-dieffe
+{
+    color: #fff !important;
+    border-color: #6dc8fa !important;
+    background-color: #6dc8fa !important;
+    box-shadow: 0 4px 6px rgba(50, 50, 93, .11), 0 1px 3px rgba(0, 0, 0, .08) !important;
+}
+.btn-dieffe:hover
+{
+    color: #fff !important;
+    border-color: #6dc8fa !important;
+    background-color: #6dc8fa !important;
+}
+.btn-dieffe:focus,
+.btn-dieffe.focus
+{
+    box-shadow: 0 4px 6px rgba(50, 50, 93, .11), 0 1px 3px rgba(0, 0, 0, .08), 0 0 0 0 rgba(45, 206, 137, .5) !important;
+}
+.btn-dieffe.disabled,
+.btn-dieffe:disabled
+{
+    color: #fff !important;
+    border-color: #6dc8fa !important;
+    background-color: #6dc8fa !important;
+}
+.btn-dieffe:not(:disabled):not(.disabled):active,
+.btn-dieffe:not(:disabled):not(.disabled).active,
+.show > .btn-dieffe.dropdown-toggle
+{
+    color: #fff !important;
+    border-color: #6dc8fa !important;
+    background-color: #3dd2ff !important;
+}
+.btn-dieffe:not(:disabled):not(.disabled):active:focus,
+.btn-dieffe:not(:disabled):not(.disabled).active:focus,
+.show > .btn-dieffe.dropdown-toggle:focus
+{
+    box-shadow: none, 0 0 0 0 rgba(45, 206, 137, .5) !important;
+}
+
+
+.text-dieffe
+{
+    color: #6dc8fa !important;
+}
+
+a.text-dieffe:hover,
+a.text-dieffe:focus
+{
+    color: #3dd2ff !important;
+}
+
+
 [tabindex='-1']:focus:not(:focus-visible)
 {
     outline: 0 !important;

@@ -1,0 +1,132 @@
+﻿@model DieffeClean.Presentation.Model.Reservation.ListReservationViewModel
+
+@{
+    ViewData["Title"] = "Lista prenotazioni";
+}
+<link rel="stylesheet" href="~/vendor/datatables.net-bs4/css/dataTables.bootstrap4.min.css"/>
+<div class="header pb-6 d-flex align-items-center bg-dieffe" style="min-height: 150px; ">
+      <!-- Mask -->
+    <span class="mask  opacity-8"></span>
+    <!-- Header container -->
+    <div class="container-fluid d-flex align-items-center">
+        <div class="row">
+            <div class="justify-content-between d-flex">
+                <div><h2 style="width: 200px; color: white;">Prenotazioni</h2></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--6">
+
+    <div class="card">
+        <div class="card-header">
+            <div class="row align-items-center">
+                <div class="col-8">
+                    <h3 class="mb-0">Lista Prenotazioni</h3>
+                </div>
+                <div class="col-4 text-right">
+                    <a asp-action="Create" asp-controller="Reservation" class="btn btn-sm btn-dieffe">Nuova prenotazione</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table align-items-center" id="table-reservations">
+                    <thead>
+                        <tr>
+                            <th>Appartamento</th>
+                            <th>Arrivo</th>
+                            <th>Partenza</th>
+                            <th>Ospite</th>
+                            <th>Nr° Ospiti</th>
+                            <th>Stato</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var reservation in Model.Reservations)
+                        {
+                            <tr id="loc-@reservation.Id">
+                                <td>@reservation.Apartment.Name</td>
+                                <td>@reservation.CheckIn.ToString("dd/MM/yyyy")</td>
+                                <td>@reservation.CheckOut.ToString("dd/MM/yyyy")</td>
+                                <td>@reservation.GuestFullName</td>
+                                <td>@reservation.NumberGuests</td>
+                                <td>
+                                    @{
+                                        var checkInCompare = DateTime.Now.CompareTo(reservation.CheckIn);
+                                        var checkOutCompare = DateTime.Now.CompareTo(reservation.CheckOut);
+                                        var cssLabel = "";
+                                        var statusRes = "";
+                                        if (checkOutCompare > 0)
+                                        {
+                                            cssLabel = "bg-label-success";
+                                            statusRes = "Passata";
+                                        }
+                                        else if (checkInCompare < 0)
+                                        {
+                                            cssLabel = "bg-label-danger";
+                                            statusRes = "Futura";
+                                        }
+                                        else
+                                        {
+                                            cssLabel = "bg-label-warning";
+                                            statusRes = "In corso";
+                                        }
+                                    }
+                                    <span class="badge rounded-pill @cssLabel">@statusRes</span></td>
+                            </tr>
+                        }
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    tr.hover:hover{
+        background-color: rgb(45,206,137, .1);
+        cursor: pointer;
+
+    }
+</style>
+@section Scripts
+{
+    <script src="~/vendor/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/vendor/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+
+    <script>
+            $(document).ready( function () {
+            table = $('#table-reservations').DataTable({
+                "language": {
+                    "rowReorder": {
+                        selector: 'td:nth-child(2)'
+                    },
+                    "responsive": true,
+                    "lengthMenu": "Mostra _MENU_ risultati per pagina",
+                    "zeroRecords": "Nessun risultato trovato",
+                    "info": "Pagina _PAGE_ di _PAGES_",
+                    "infoEmpty": "Nessun risultato disponibile",
+                    "infoFiltered": "(filtrato da _MAX_ risultati totali)",
+                    "search": "Ricerca:",
+                    "paginate": {
+                        "first": "Inizio",
+                        "previous": "<",
+                        "next": ">",
+                        "last": "Fine"
+                    },
+                },
+                "columnDefs": [
+                    { "searchable": true, "orderable": true, "targets": 0 },
+                    { "searchable": false, "orderable": true, "targets": 1, type: 'date-eu' },
+                    { "searchable": false, "orderable": true, "targets": 2, type: 'date-eu' },
+                    { "searchable": true, "orderable": true, "targets": 3 },
+                    { "searchable": false, "orderable": true, "targets": 4 },
+                    { "searchable": true, "orderable": true, "targets": 5 },
+                ]
+            });
+        });
+
+    </script>
+}

@@ -1,6 +1,8 @@
 using System.Text.Json.Serialization;
 using DieffeClean.Domain.Data;
 using DieffeClean.Domain.Model;
+using DieffeClean.Domain.Services;
+using DieffeClean.Presentation.Helper;
 using DieffeClean.Utils.Email;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
@@ -38,7 +40,14 @@ try
     
     builder.Services.AddSingleton(emailConfig);
     builder.Services.AddTransient<IEmailSender, EmailSender>();
+    builder.Services.AddTransient<IApartmentService, ApartmentService>();
+    builder.Services.AddTransient<IAccountService, AccountService>();
+    builder.Services.AddTransient<IReservationService, ReservationService>();
 
+    builder.Services.AddTransient<AccountHelper>();
+    builder.Services.AddTransient<ReservationHelper>();
+    builder.Services.AddTransient<ApartmentHelper>();
+    
     builder.Services.AddIdentity<MyUser, IdentityRole>(opts =>
         {
             opts.SignIn.RequireConfirmedEmail = false;

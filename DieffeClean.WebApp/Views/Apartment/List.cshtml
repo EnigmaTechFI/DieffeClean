@@ -1,0 +1,103 @@
+﻿@model DieffeClean.Presentation.Model.Apartment.ListApartmentsViewModel
+
+@{
+    ViewData["Title"] = "Lista Appartamenti";
+}
+
+<div class="header pb-6 d-flex align-items-center bg-dieffe" style="min-height: 150px; ">
+      <!-- Mask -->
+    <span class="mask  opacity-8"></span>
+    <!-- Header container -->
+    <div class="container-fluid d-flex align-items-center">
+        <div class="row">
+            <div style="position: relative; left: 5%;">
+                <h2 style="color: white;">Appartamenti</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--6">
+
+    <div class="card">
+        <div class="card-header">
+            <div class="row align-items-center">
+                <div class="col-8">
+                    <h3 class="mb-0">Lista appartamenti</h3>
+                </div>
+                <div class="col-4 text-right">
+                    <a asp-action="Create" asp-controller="Apartment" class="btn btn-sm btn-dieffe">Nuovo appartamento</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table align-items-center">
+                    <thead class="thead-light">
+                    <tr>
+                        <th scope="col" class="sort" data-sort="name">Nome</th>
+                        <th scope="col" class="sort" data-sort="city">Città</th>
+                        <th scope="col" class="sort" data-sort="address">Indirizzo</th>
+                        <th scope="col">Prossima prenotazione</th>
+                    </tr>
+                    </thead>
+                    <tbody class="list">
+                    @foreach (var apartment in Model.Apartments)
+                    {
+                        <tr class="hover" onclick="GoToDetail('@apartment.Id')" id="apartment-@apartment.Id">
+                            <td class="budget">
+                                @Html.DisplayFor(model => apartment.Name)
+                            </td>
+                            <td class="city">
+                                @Html.DisplayFor(model => apartment.City)
+                            </td>
+                            <td class="address">
+                                @Html.DisplayFor(model => apartment.Address)
+                            </td>
+                            @{
+                                var label = "";
+                                var cssClass = "";
+                                var now = DateTime.Now;
+                                if (apartment.Reservations == null)
+                                {
+                                    label = "Nessuna prenotazione";
+                                    cssClass = "bg-label-danger";
+                                }
+                                else if (apartment.Reservations.FirstOrDefault().CheckIn <= now)
+                                {
+                                    label = "In corso";
+                                    cssClass = "bg-label-success";
+                                }
+                                else
+                                {
+                                    var days = (apartment.Reservations.FirstOrDefault().CheckIn - now).Days;
+                                    label = "Tra " + days + " giorni";
+                                    cssClass = "bg-label-warning";
+                                }
+                            }
+                            <td><span class="badge rounded-pill @cssClass">@label</span></td>
+                        </tr>
+                    }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+    function GoToDetail(Id){
+        window.location.href = "/Apartment/Info?id=" + Id;
+    }
+    </script>
+
+}
+<style>
+    tr.hover:hover{
+        background-color: rgb(45,206,137, .1);
+        cursor: pointer;
+    }
+</style>
