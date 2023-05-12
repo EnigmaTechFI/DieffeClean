@@ -1,7 +1,7 @@
-@model DieffeClean.Presentation.Model.Reservation.CreateReservationViewModel
+@model DieffeClean.Presentation.Model.Reservation.InfoReservationViewModel
 
 @{
-    ViewData["Title"] = "Registra prenotazione";
+    ViewData["Title"] = "Info prenotazione";
 }
 
 <div class="header pb-6 d-flex align-items-center bg-dieffe" style="min-height: 150px; ">
@@ -21,73 +21,71 @@
     <div class="row">
         <div class="col-xl-8-a">
             <div class="card">
-            <form method="post">
                 <div class="card-header">
                     <div class="row align-items-center">
                     <div class="col-8">
-                        <h3 class="mb-0">Registra nuova prenotazione</h3>
+                        <h3 class="mb-0">Dettagli prenotazione</h3>
                     </div>
                     <div class="col-4 text-right">
-                        <button type="submit" class="btn btn-sm btn-dieffe">Salva</button>
+                        <a type="button" asp-action="Update" asp-controller="Reservation" asp-route-id="@Model.Reservation.Id" class="btn btn-sm btn-dieffe">Modifica</a>
                     </div>
                     </div>
                 </div>
                 <div class="card-body">
-                    <h6 class="heading-small text-muted mb-4">Inserire dati prenotazione</h6>
+                    <h6 class="heading-small text-muted mb-4">Dati prenotazione</h6>
                     <div class="pl-lg-4">
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                <label class="form-control-label" for="input-name">Appartamento</label>
-                                    @Html.DropDownListFor(model => model.Reservation.ApartmentId, new SelectList(Model.Apartments, "Id", "Name"), "Selezionare appartamento", new { @class="form-control-drop-repeat" })
+                                <label class="form-control-label" for="input-name">Nome dell'appartamento </label>
+                                    <input asp-for="Reservation.Apartment.Name" readonly type="text" id="input-address" class="form-control" required>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group">
                                     <label class="form-control-label" for="input-city">Numero Ospiti</label>
-                                    <input asp-for="Reservation.NumberGuests" type="number" id="input-address" class="form-control" required>
+                                    <input asp-for="Reservation.NumberGuests" readonly type="number" id="input-address" class="form-control" required>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group">
                                     <label class="form-control-label" for="input-name">Check in</label>
-                                    <input asp-for="@Model.CheckIn" min="@DateTime.Today.ToString("yyyy-MM-dd HH:mm")" type="datetime-local" id="input-startDate" class="form-control" required>
+                                    <input asp-for="@Model.Reservation.CheckIn" readonly type="text" id="input-startDate" class="form-control" required>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group">
                                     <label class="form-control-label" for="input-name">Check out</label>
-                                    <input asp-for="@Model.CheckOut" min="@DateTime.Today.ToString("yyyy-MM-dd HH:mm")" type="datetime-local" id="input-startDate" class="form-control" required>
+                                    <input asp-for="@Model.Reservation.CheckOut" readonly type="text" id="input-startDate" class="form-control" required>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group">
                                 <label class="form-control-label" for="input-city">Nome ospite principale</label>
-                                <input asp-for="Reservation.GuestFirstName" type="text" id="input-address" class="form-control" required>
+                                <input asp-for="Reservation.GuestFirstName" readonly type="text" id="input-address" class="form-control" required>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group">
                                 <label class="form-control-label" for="input-city">Cognome ospite principale</label>
-                                <input asp-for="Reservation.GuestLastName" type="text" id="input-address" class="form-control" required>
+                                <input asp-for="Reservation.GuestLastName" readonly type="text" id="input-address" class="form-control" required>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group">
                                 <label class="form-control-label" for="input-city">Numero di telefono ospite</label>
-                                <input asp-for="Reservation.PhoneNumber" type="text" id="input-address" class="form-control" required>
+                                <input asp-for="Reservation.PhoneNumber" readonly type="text" id="input-address" class="form-control" required>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group">
                                 <label class="form-control-label" for="input-city">Email ospite</label>
-                                <input asp-for="Reservation.Email" type="text" id="input-address" class="form-control" required>
+                                <input asp-for="Reservation.Email" readonly type="text" id="input-address" class="form-control" required>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </form>
             </div>
         </div>
     </div>

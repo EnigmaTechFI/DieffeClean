@@ -4,6 +4,7 @@ using DieffeClean.Domain.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DieffeClean.Domain.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230512142349_TmpDeleteApartmentInUserApartment")]
+    partial class TmpDeleteApartmentInUserApartment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,7 +141,7 @@ namespace DieffeClean.Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ApartmentId")
+                    b.Property<Guid?>("ApartmentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("MyUserId")
@@ -379,19 +381,15 @@ namespace DieffeClean.Domain.Migrations
 
             modelBuilder.Entity("DieffeClean.Domain.Model.UserApartment", b =>
                 {
-                    b.HasOne("DieffeClean.Domain.Model.Apartment", "Apartment")
+                    b.HasOne("DieffeClean.Domain.Model.Apartment", null)
                         .WithMany("UserApartments")
-                        .HasForeignKey("ApartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ApartmentId");
 
                     b.HasOne("DieffeClean.Domain.Model.MyUser", "MyUser")
                         .WithMany("UserApartments")
                         .HasForeignKey("MyUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Apartment");
 
                     b.Navigation("MyUser");
                 });

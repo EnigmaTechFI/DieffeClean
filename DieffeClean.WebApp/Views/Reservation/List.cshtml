@@ -46,7 +46,7 @@
                         <tbody>
                         @foreach (var reservation in Model.Reservations)
                         {
-                            <tr id="loc-@reservation.Id">
+                            <tr class="hover" onclick="GoToDetail('@reservation.Id')">
                                 <td>@reservation.Apartment.Name</td>
                                 <td>@reservation.CheckIn.ToString("dd/MM/yyyy")</td>
                                 <td>@reservation.CheckOut.ToString("dd/MM/yyyy")</td>
@@ -86,7 +86,7 @@
 
 <style>
     tr.hover:hover{
-        background-color: rgb(45,206,137, .1);
+        background-color: rgb(61,210,255, .1);
         cursor: pointer;
 
     }
@@ -97,7 +97,12 @@
     <script src="~/vendor/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
 
     <script>
-            $(document).ready( function () {
+    
+        function GoToDetail(Id){
+            window.location.href = "/Reservation/Info?id=" + Id;
+        }
+        
+        $(document).ready( function () {
             table = $('#table-reservations').DataTable({
                 "language": {
                     "rowReorder": {
