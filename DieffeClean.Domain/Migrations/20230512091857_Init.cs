@@ -15,7 +15,7 @@ namespace DieffeClean.Domain.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PublicName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PublicName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NumberGuestrooms = table.Column<int>(type: "int", nullable: false),
                     NumberBathroom = table.Column<int>(type: "int", nullable: false),
                     NumberBed = table.Column<int>(type: "int", nullable: false),
@@ -27,9 +27,9 @@ namespace DieffeClean.Domain.Migrations
                     City = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Nation = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Province = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IntercomName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    HostPhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EmailNotification = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    IntercomName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HostPhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmailNotification = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -81,7 +81,8 @@ namespace DieffeClean.Domain.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ApartmentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ApartmentId = table.Column<int>(type: "int", nullable: false),
+                    ApartmentId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     GuestFirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     GuestLastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -89,14 +90,15 @@ namespace DieffeClean.Domain.Migrations
                     CheckIn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CheckInAllDay = table.Column<bool>(type: "bit", nullable: false),
                     CheckOut = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CheckOutAllDay = table.Column<bool>(type: "bit", nullable: false)
+                    CheckOutAllDay = table.Column<bool>(type: "bit", nullable: false),
+                    NumberGuests = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Reservations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Reservations_Apartments_ApartmentId",
-                        column: x => x.ApartmentId,
+                        name: "FK_Reservations_Apartments_ApartmentId1",
+                        column: x => x.ApartmentId1,
                         principalTable: "Apartments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -274,9 +276,9 @@ namespace DieffeClean.Domain.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reservations_ApartmentId",
+                name: "IX_Reservations_ApartmentId1",
                 table: "Reservations",
-                column: "ApartmentId");
+                column: "ApartmentId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserApartments_ApartmentId",

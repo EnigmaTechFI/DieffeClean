@@ -3,6 +3,7 @@ namespace DieffeClean.Domain.Model;
 public class Reservation
 {
     public Guid Id { get; set; }
+    public int ApartmentId { get; set; }
     public Apartment Apartment { get; set; }
     public string GuestFirstName { get; set; }
     public string GuestLastName { get; set; }

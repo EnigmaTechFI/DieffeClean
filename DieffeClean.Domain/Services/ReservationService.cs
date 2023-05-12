@@ -17,4 +17,17 @@ public class ReservationService : IReservationService
     {
         return _dbContext.Reservations.Include(s => s.Apartment).ToList();
     }
+
+    public List<Reservation> GetOpenedOrFutureReservationsByApartmentId(int apartmentId)
+    {
+        return _dbContext.Reservations
+            .Where(s => s.ApartmentId == apartmentId && s.CheckOut.Date >= DateTime.Now.Date)
+            .ToList();
+    }
+
+    public void Create(Reservation reservation)
+    {
+        _dbContext.Reservations.Add(reservation);
+        _dbContext.SaveChanges();
+    }
 }

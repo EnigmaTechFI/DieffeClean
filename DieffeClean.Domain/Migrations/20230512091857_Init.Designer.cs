@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DieffeClean.Domain.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230506091401_Init")]
+    [Migration("20230512091857_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,15 +39,12 @@ namespace DieffeClean.Domain.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EmailNotification")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("HostPhoneNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IntercomName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -75,7 +72,6 @@ namespace DieffeClean.Domain.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PublicName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("WifiName")
@@ -98,7 +94,10 @@ namespace DieffeClean.Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ApartmentId")
+                    b.Property<int>("ApartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("ApartmentId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CheckIn")
@@ -125,13 +124,16 @@ namespace DieffeClean.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("NumberGuests")
+                        .HasColumnType("int");
+
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApartmentId");
+                    b.HasIndex("ApartmentId1");
 
                     b.ToTable("Reservations");
                 });
@@ -376,7 +378,7 @@ namespace DieffeClean.Domain.Migrations
                 {
                     b.HasOne("DieffeClean.Domain.Model.Apartment", "Apartment")
                         .WithMany("Reservations")
-                        .HasForeignKey("ApartmentId")
+                        .HasForeignKey("ApartmentId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -1,4 +1,5 @@
 ﻿using DieffeClean.Presentation.Helper;
+using DieffeClean.Presentation.Model.Reservation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DieffeClean.WebApp.Controllers;
@@ -21,7 +22,21 @@ public class ReservationController : Controller
     [HttpGet]
     public IActionResult Create()
     {
-        return View();
+        return View(_reservationHelper.GetCreateReservationViewModel());
+    }
+    
+    [HttpPost]
+    public IActionResult Create(CreateReservationViewModel model)
+    {
+        try
+        {
+            _reservationHelper.CreateReservation(model);
+            return View();
+        }
+        catch (Exception e)
+        {
+            return View(_reservationHelper.GetCreateReservationViewModelException(model));
+        }
     }
     
     [HttpGet]
