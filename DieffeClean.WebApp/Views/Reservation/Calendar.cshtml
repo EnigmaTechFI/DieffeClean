@@ -1,0 +1,62 @@
+
+@{
+    ViewData["Title"] = "Calendario";
+}
+
+<div class="fw-bold col app-calendar-content">
+    <div class="card shadow-none border-0">
+        <div class="card-body pb-0">
+        <!-- FullCalendar -->
+            <div id="myTimeline">
+                  <ul class="timeline-events">
+                    @{
+                        var index = 1;
+                        foreach (var item in Model.Locations)
+                        {
+                            @foreach(var res in item.Reservations)
+                            {
+                                <li data-timeline-node="{extend:'{\'res_id\':@res.Id, \'loc_id\':@item.LocationId}', start: '@res.CheckIn.ToString("yyyy-MM-dd HH:mm")', end: '@res.CheckOut.ToString("yyyy-MM-dd HH:mm")', row: @index }">
+                                    <span class="event-label">@res.GuestFullName</span>
+                                </li>
+                            }
+                            index++;
+                        }
+                    }
+                  </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="reservationDetail" tabindex="-1" aria-modal="true" role="dialog" style="display: none;">
+    <div class="modal-dialog modal-simple modal-enable-otp modal-dialog-centered">
+        <div class="modal-content p-3 p-md-5">
+        <div class="modal-body">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="text-center mb-2">
+                <p class="mb-2" id="locationName">Verify Your Mobile Number for SMS</p>
+                <h3 class="mb-4" id="reservationTitle">Enable One Time Password</h3>
+            </div>
+            <div class="d-flex m-2">
+                <strong>Ospite: &nbsp;</strong><p id="nameGuest"></p>
+            </div>
+            <div class="d-flex m-2">
+                <strong>Email ospite: &nbsp;</strong><p id="mailGuest"></p>
+            </div>
+            <div class="d-flex m-2">
+                <strong>Telefono ospite: &nbsp;</strong><p id="telGuest"></p>
+            </div>
+            <div class="d-flex m-2">
+                <strong>Data Check-In: &nbsp;</strong><p id="checkin"></p>
+            </div>
+            <div class="d-flex m-2">
+                <strong>Data Check-Out: &nbsp;</strong><p id="checkout"></p>
+            </div>
+            <div class="col-12 text-end">
+                <a id="view" class="btn btn-label-primary waves-effect" data-bs-dismiss="modal" aria-label="Close">Visualizza</a>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>

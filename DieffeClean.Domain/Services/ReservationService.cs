@@ -47,4 +47,9 @@ public class ReservationService : IReservationService
         _dbContext.Reservations.Update(reservation);
         _dbContext.SaveChanges();
     }
+
+    public List<Reservation> GetAllByNow()
+    {
+        return _dbContext.Reservations.Where(s => s.CheckOut >= DateTime.Now).ToList();
+    }
 }

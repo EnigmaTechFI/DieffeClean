@@ -99,4 +99,11 @@ public class ReservationHelper
         };
     }
 
+    public CalendarViewModel GetCalendarViewModel()
+    {
+        return new CalendarViewModel()
+        {
+            Reservations = _reservationService.GetAllByNow()
+        };
+    }
 }

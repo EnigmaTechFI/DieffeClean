@@ -12,12 +12,6 @@ public class ReservationController : Controller
     {
         _reservationHelper = reservationHelper;
     }
-
-    [HttpGet]
-    public IActionResult Calendar()
-    {
-        return View();
-    }
     
     [HttpGet]
     public IActionResult Create()
@@ -91,6 +85,19 @@ public class ReservationController : Controller
         catch (Exception e)
         {
             return View(_reservationHelper.GetCreateReservationViewModelException(model));
+        }
+    }
+    
+    [HttpGet]
+    public IActionResult Calendar()
+    {
+        try
+        {
+            return View(_reservationHelper.GetCalendarViewModel());
+        }
+        catch (Exception e)
+        {
+            throw;
         }
     }
     
