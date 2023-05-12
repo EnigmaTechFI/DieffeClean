@@ -18,7 +18,7 @@ public class ReservationService : IReservationService
         return _dbContext.Reservations.Include(s => s.Apartment).ToList();
     }
 
-    public List<Reservation> GetOpenedOrFutureReservationsByApartmentId(int apartmentId)
+    public List<Reservation> GetOpenedOrFutureReservationsByApartmentId(Guid apartmentId)
     {
         return _dbContext.Reservations
             .Where(s => s.ApartmentId == apartmentId && s.CheckOut.Date >= DateTime.Now.Date)

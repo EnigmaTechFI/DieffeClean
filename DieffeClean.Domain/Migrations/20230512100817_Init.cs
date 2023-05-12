@@ -81,8 +81,7 @@ namespace DieffeClean.Domain.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ApartmentId = table.Column<int>(type: "int", nullable: false),
-                    ApartmentId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ApartmentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     GuestFirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     GuestLastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -97,8 +96,8 @@ namespace DieffeClean.Domain.Migrations
                 {
                     table.PrimaryKey("PK_Reservations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Reservations_Apartments_ApartmentId1",
-                        column: x => x.ApartmentId1,
+                        name: "FK_Reservations_Apartments_ApartmentId",
+                        column: x => x.ApartmentId,
                         principalTable: "Apartments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -276,9 +275,9 @@ namespace DieffeClean.Domain.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reservations_ApartmentId1",
+                name: "IX_Reservations_ApartmentId",
                 table: "Reservations",
-                column: "ApartmentId1");
+                column: "ApartmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserApartments_ApartmentId",

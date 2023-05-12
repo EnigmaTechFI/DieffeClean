@@ -92,10 +92,7 @@ namespace DieffeClean.Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("ApartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("ApartmentId1")
+                    b.Property<Guid>("ApartmentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CheckIn")
@@ -131,7 +128,7 @@ namespace DieffeClean.Domain.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApartmentId1");
+                    b.HasIndex("ApartmentId");
 
                     b.ToTable("Reservations");
                 });
@@ -376,7 +373,7 @@ namespace DieffeClean.Domain.Migrations
                 {
                     b.HasOne("DieffeClean.Domain.Model.Apartment", "Apartment")
                         .WithMany("Reservations")
-                        .HasForeignKey("ApartmentId1")
+                        .HasForeignKey("ApartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
