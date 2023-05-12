@@ -1,11 +1,13 @@
-using MailKit.Net.Smtp;
+using System.Net.Mail;
 using MimeKit;
+using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 
 namespace DieffeClean.Utils.Email
 {
     public class EmailSender : IEmailSender
     {
         private readonly EmailConfiguration _emailConfig;
+
         public EmailSender(EmailConfiguration emailConfig)
         {
             _emailConfig = emailConfig;

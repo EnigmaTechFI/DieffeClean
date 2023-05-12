@@ -43,10 +43,13 @@ try
     builder.Services.AddTransient<IApartmentService, ApartmentService>();
     builder.Services.AddTransient<IAccountService, AccountService>();
     builder.Services.AddTransient<IReservationService, ReservationService>();
+    builder.Services.AddTransient<IStaffService, StaffService>();
 
     builder.Services.AddTransient<AccountHelper>();
     builder.Services.AddTransient<ReservationHelper>();
     builder.Services.AddTransient<ApartmentHelper>();
+    builder.Services.AddTransient<StaffHelper>();
+
     
     builder.Services.AddIdentity<MyUser, IdentityRole>(opts =>
         {

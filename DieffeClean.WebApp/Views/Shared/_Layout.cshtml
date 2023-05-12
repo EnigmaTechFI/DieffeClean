@@ -87,7 +87,7 @@
 
                         <ul class="navbar-nav mb-md-3">
                             <li class="nav-item">
-                                <a style="cursor: pointer;" class="nav-link @(ViewContext.RouteData.Values["Action"].ToString() == "RegisterManualInvoice" ? "active" : "")" data-toggle="modal" data-target="#payment-date-number-modal" >
+                                <a style="cursor: pointer;" class="nav-link @(ViewContext.RouteData.Values["Action"].ToString() == "Staff" ? "active" : "")" asp-controller="Staff" asp-action="HostList">
                                     <i class="ni ni-active-40 text-dieffe"></i>
                                     <span class="nav-link-text" style="position: relative; padding-top: 5px;">Host</span>
                                 </a>
@@ -95,7 +95,7 @@
                         </ul>
                         <ul class="navbar-nav mb-md-3">
                             <li class="nav-item">
-                                <a style="cursor: pointer;" class="nav-link @(ViewContext.RouteData.Values["Action"].ToString() == "RegisterManualInvoice" ? "active" : "")" data-toggle="modal" data-target="#payment-date-number-modal" >
+                                <a style="cursor: pointer;" class="nav-link @(ViewContext.RouteData.Values["Action"].ToString() == "Staff" ? "active" : "")" asp-controller="Staff" asp-action="CleanList">
                                     <i class="ni ni-active-40 text-dieffe"></i>
                                     <span class="nav-link-text" style="position: relative; padding-top: 5px;">Imprese pulizie</span>
                                 </a>
