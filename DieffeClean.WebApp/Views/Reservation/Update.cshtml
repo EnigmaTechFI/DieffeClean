@@ -1,0 +1,95 @@
+@model DieffeClean.Presentation.Model.Reservation.CreateReservationViewModel
+
+@{
+    ViewData["Title"] = "Modifica prenotazione";
+}
+
+<div class="header pb-6 d-flex align-items-center bg-dieffe" style="min-height: 150px; ">
+<!-- Mask -->
+    <span class="mask  opacity-8"></span>
+    <!-- Header container -->
+    <div class="container-fluid d-flex align-items-center">
+    <div class="row">
+        <div style="position: relative; left: 5%;">
+        <h2 style="color: white;">Prenotazione</h2>
+        </div>
+    </div>
+    </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--6">
+    <div class="row">
+        <div class="col-xl-8-a">
+            <div class="card">
+                <form method="post">
+                    @Html.HiddenFor(s => s.Reservation.Id)
+                    <div class="card-header">
+                        <div class="row align-items-center">
+                            <div class="col-8">
+                                <h3 class="mb-0">Modifica prenotazione</h3>
+                            </div>
+                            <div class="col-4 text-right">
+                                <button type="submit" class="btn btn-sm btn-dieffe">Salva</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="heading-small text-muted mb-4">Inserire dati prenotazione</h6>
+                        <div class="pl-lg-4">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-name">Appartamento</label>
+                                        @Html.DropDownListFor(model => model.Reservation.ApartmentId, new SelectList(Model.Apartments, "Id", "Name"), "Selezionare appartamento", new { @class = "form-control-drop-repeat" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-city">Numero Ospiti</label>
+                                        <input asp-for="Reservation.NumberGuests" type="number" id="input-address" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-name">Check in</label>
+                                        <input asp-for="@Model.CheckIn" min="@DateTime.Today.ToString("yyyy-MM-dd HH:mm")" type="datetime-local" id="input-startDate" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-name">Check out</label>
+                                        <input asp-for="@Model.CheckOut" min="@DateTime.Today.ToString("yyyy-MM-dd HH:mm")" type="datetime-local" id="input-startDate" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-city">Nome ospite principale</label>
+                                        <input asp-for="Reservation.GuestFirstName" type="text" id="input-address" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-city">Cognome ospite principale</label>
+                                        <input asp-for="Reservation.GuestLastName" type="text" id="input-address" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-city">Numero di telefono ospite</label>
+                                        <input asp-for="Reservation.PhoneNumber" type="text" id="input-address" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-city">Email ospite</label>
+                                        <input asp-for="Reservation.Email" type="text" id="input-address" class="form-control" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

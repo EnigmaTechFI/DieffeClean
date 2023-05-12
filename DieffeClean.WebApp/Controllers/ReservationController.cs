@@ -31,7 +31,7 @@ public class ReservationController : Controller
         try
         {
             _reservationHelper.CreateReservation(model);
-            return View();
+            return RedirectToAction("List");
         }
         catch (Exception e)
         {
@@ -52,4 +52,46 @@ public class ReservationController : Controller
             throw;
         }
     }
+    
+    [HttpGet]
+    public IActionResult Info(Guid id)
+    {
+        try
+        {
+            return View(_reservationHelper.GetInfoReservationViewModel(id));
+        }
+        catch (Exception e)
+        {
+            return RedirectToAction("List");
+        }
+    }
+    
+    [HttpGet]
+    public IActionResult Update(Guid id)
+    {
+        try
+        {
+            return View(_reservationHelper.GetUpdateReservationViewModel(id));
+        }
+        catch (Exception e)
+        {
+            return RedirectToAction("Info", new {id = id});
+        }
+    }
+    
+    [HttpPost]
+    public IActionResult Update(CreateReservationViewModel model)
+    {
+        try
+        {
+            
+            _reservationHelper.UpdateReservation(model);
+            return RedirectToAction("List");
+        }
+        catch (Exception e)
+        {
+            return View(_reservationHelper.GetCreateReservationViewModelException(model));
+        }
+    }
+    
 }
