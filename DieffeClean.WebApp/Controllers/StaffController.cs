@@ -75,32 +75,86 @@ public class StaffController : Controller
     }
     
     [HttpPost]
-    public async Task<IActionResult> NewHost(NewStaffViewModel model)
+    public async Task<IActionResult> NewHost(NewStaffViewModel model, string[] SelectedApartments)
     {
+
         try
         {
-            _staffHelper.NewStaff(model, "Admin", await _userManager.GetUserAsync(this.User));
-            return View();
+            _staffHelper.NewStaff(model, "Admin", SelectedApartments);
+            return RedirectToAction("HostList");
         }
         catch (Exception e)
         {
-            //qui poi andrà ricaricato l'elenco apparamenti, guardare in reservation
-            return View();
+            return RedirectToAction("NewHost");
         }
     }
     
     [HttpPost]
-    public async Task<IActionResult> NewClean(NewStaffViewModel model)
+    public async Task<IActionResult> NewClean(NewStaffViewModel model, string[] SelectedApartments)
     {
         try
         {
-            _staffHelper.NewStaff(model, "CleaningUser", await _userManager.GetUserAsync(this.User));
-            return View(); //redirect to list
+            _staffHelper.NewStaff(model, "CleaningUser", SelectedApartments);
+            return RedirectToAction("CleanList");
         }
         catch (Exception e)
         {
-            //qui poi andrà ricaricato l'elenco apparamenti, guardare in reservation
-            return View();
+            return RedirectToAction("NewClean");
+        }
+    }
+    
+    [HttpGet]
+    public IActionResult InfoHost(string id)
+    {
+        try
+        {
+            return View(_staffHelper.GetStaffById(id));
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
+    [HttpGet]
+    public IActionResult InfoClean(string id)
+    {
+        try
+        {
+            return View(_staffHelper.GetStaffById(id));
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
+    public RedirectToActionResult DeleteStaffHost(string staffId)
+    {
+        try
+        {
+            _staffHelper.DeleteStaff(staffId);
+            return RedirectToAction("HostList");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return RedirectToAction("HostList");        }
+    }
+    
+    public RedirectToActionResult DeleteStaffClean(string staffId)
+    {
+        try
+        {
+            _staffHelper.DeleteStaff(staffId);
+            return RedirectToAction("CleanList");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return RedirectToAction("CleanList");        
         }
     }
 }

@@ -20,6 +20,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\DieffeClean.Domain\DieffeClean.Domain.csproj" />
+      <ProjectReference Include="..\DieffeClean.Utils\DieffeClean.Utils.csproj" />
     </ItemGroup>
 
 </Project>

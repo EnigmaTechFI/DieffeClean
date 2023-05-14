@@ -1,8 +1,11 @@
-﻿using DieffeClean.Domain.Constants;
+﻿using System.Text.RegularExpressions;
+using DieffeClean.Domain.Constants;
 using DieffeClean.Domain.Model;
 using DieffeClean.Domain.Services;
 using DieffeClean.Presentation.Model.Staff;
+using DieffeClean.Utils.Email;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using NETCore.MailKit.Core;
 
 namespace DieffeClean.Presentation.Helper;
@@ -12,23 +15,26 @@ public class StaffHelper
     private readonly IStaffService _staffService;
     private readonly IApartmentService _apartmentService;
     private readonly UserManager<MyUser> _userManager;
-    private readonly IEmailService _emailService;
+    private readonly IEmailSender _emailSender;
 
 
-    public StaffHelper(IStaffService staffService, IApartmentService apartmentService, UserManager<MyUser> userManager, IEmailService emailService)
+
+    public StaffHelper(IStaffService staffService, IEmailSender emailSender, IApartmentService apartmentService, UserManager<MyUser> userManager)
     {
         _staffService = staffService;
         _apartmentService = apartmentService;
         _userManager = userManager;
-        _emailService = emailService;
+        _emailSender = emailSender;
     }
 
     public ListStaffViewModel GetStaff(string role)
     {
-        //Qui fare il ciclaggio e togliere i role che non vanno bene.
+        var staffList1 = _staffService.GetStaff();
+        var staffList2 = staffList1.Where(s => _userManager.IsInRoleAsync(s, role).Result).ToList();
+
         return new ListStaffViewModel()
         {
-            Staffs = _staffService.GetStaff()
+            Staffs = staffList2
         };
     }
 
@@ -36,16 +42,14 @@ public class StaffHelper
     {
         return new NewStaffViewModel()
         {
-            Apartaments = _apartmentService.GetAll()
+            Apartments = _apartmentService.GetAll()
         };
     }
     
-    public void NewStaff(NewStaffViewModel model, string role, MyUser User)
+    public async Task NewStaff(NewStaffViewModel model, string role, string[] SelectedApartments)
     {
         
-        /*ParseDates(model);  //dopo vagliare la validazione
-        ValidateReservationDate(model.Reservation, DateTime.Now);
-        */
+        ValidateEmail(model.Staff.Email);
         
         var adm = _userManager.FindByEmailAsync(model.Staff.Email).Result;
         if (adm == null)
@@ -63,24 +67,25 @@ public class StaffHelper
             {
                 if (role == "Admin")
                 {
-                    _userManager.AddToRolesAsync(newUser, new[] { Roles.Admin });
+                    _userManager.AddToRolesAsync(newUser, new[] { Roles.Admin }).GetAwaiter().GetResult();
                 }
                 else
                 {
-                    _userManager.AddToRolesAsync(newUser, new[] { Roles.CleaningUser });
+                    _userManager.AddToRolesAsync(newUser, new[] { Roles.CleaningUser }).GetAwaiter().GetResult();
                 }
 
-                //_emailService.SendEmailNewAccount(newUser.Email, password, role);
+                _staffService.SetUserApartments(newUser.Id, SelectedApartments);
                 
-                foreach(var loc in model.Apartaments)
-                {
-                    newUser.UserApartments.Add(new UserApartment()
-                    {
-                        ApatmentId = loc.Id,
-                        MyUserId = newUser.Id,
-                    });
-                }
+                var message = new Message(new (string, string)[] { (model.Staff.UserName, model.Staff.Email) }, "Nuovo account", "Nuovo account");
+                List<(string, string)> replacer = new List<(string, string)> { ("[user]", model.Staff.Email) , ("[password]", password)};
+                var currentPath = Directory.GetCurrentDirectory();
+                await _emailSender.SendEmailAsync(message, currentPath + "/wwwroot/MailTemplate/new-account.html", replacer);
             }
+            
+        }
+        else
+        {
+            throw new Exception("Email già presente");
         }
     }
     
@@ -109,6 +114,31 @@ public class StaffHelper
         stringChars[8] = specialChar[random.Next(num.Length)];
 
         return new String(stringChars);
+    }
+    
+    public NewStaffViewModel GetStaffById(string id)
+    {
+        return new NewStaffViewModel()
+        {
+            Staff = _staffService.GetStaffById(id),
+            Apartments = _apartmentService.GetAll()
+        };
+    }
+    
+    private void ValidateEmail(string email)
+    {
+        string pattern = @"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$";
+        Regex regex = new Regex(pattern);
+
+        if (!regex.IsMatch(email))
+        {
+            throw new Exception("Email non corretta");
+        }
+    }
+
+    public void DeleteStaff(string staffId)
+    {
+        _staffService.DeleteStaffById(staffId);
     }
     
 }

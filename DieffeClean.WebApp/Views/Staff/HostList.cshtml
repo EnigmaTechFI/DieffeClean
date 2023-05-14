@@ -30,66 +30,57 @@
                 </div>
             </div>
         </div>
-        @*<div class="card-body">
+        <div class="card-body">
             <div class="table-responsive">
-                <table class="table align-items-center" id="table-reservations">
-                    <thead>
+                <table class="table align-items-center" id="table-staffs">
+                    <thead class="thead-light">
+                    <tr>
+                        <th>Username</th>
+                        <th>Mail</th>
+                        <th>Azioni</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var staff in Model.Staffs)
+                    {
                         <tr>
-                            <th>Appartamento</th>
-                            <th>Arrivo</th>
-                            <th>Partenza</th>
-                            <th>Ospite</th>
-                            <th>Nr° Ospiti</th>
-                            <th>Stato</th>
+                            <td id="staff-@staff.Id" onclick="GoToDetail('@staff.Id')" id="staff-@staff.Id">@staff.UserName</td>
+                            <td id="staff-@staff.Id" onclick="GoToDetail('@staff.Id')" id="staff-@staff.Id">@staff.Email</td>
+                            <td>
+                            <i class="fas fa-trash fa-lg pl-2 del-staff" style="cursor: pointer; color: #6d767e;" id="@staff.Id" title="Elimina" data-toggle="modal" data-target="#confirm-del-modal" onclick="SetDataStaffId('#confirm-del-modal', '@staff.Id')"></i>
+                            </td>
                         </tr>
-                        </thead>
-                        <tbody>
-                        @foreach (var reservation in Model.Reservations)
-                        {
-                            <tr id="loc-@reservation.Id">
-                                <td>@reservation.Apartment.Name</td>
-                                <td>@reservation.CheckIn.ToString("dd/MM/yyyy")</td>
-                                <td>@reservation.CheckOut.ToString("dd/MM/yyyy")</td>
-                                <td>@reservation.GuestFullName</td>
-                                <td>@reservation.NumberGuests</td>
-                                <td>
-                                    @{
-                                        var checkInCompare = DateTime.Now.CompareTo(reservation.CheckIn);
-                                        var checkOutCompare = DateTime.Now.CompareTo(reservation.CheckOut);
-                                        var cssLabel = "";
-                                        var statusRes = "";
-                                        if (checkOutCompare > 0)
-                                        {
-                                            cssLabel = "bg-label-success";
-                                            statusRes = "Passata";
-                                        }
-                                        else if (checkInCompare < 0)
-                                        {
-                                            cssLabel = "bg-label-danger";
-                                            statusRes = "Futura";
-                                        }
-                                        else
-                                        {
-                                            cssLabel = "bg-label-warning";
-                                            statusRes = "In corso";
-                                        }
-                                    }
-                                    <span class="badge rounded-pill @cssLabel">@statusRes</span></td>
-                            </tr>
-                        }
-                        </tbody>
+                    }
+                    </tbody>
                 </table>
             </div>
-        </div>*@
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirm-del-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Conferma eliminazione</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">Sei sicuro di voler eliminare questo account?</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Annulla</button>
+                <button class="btn btn-danger" onclick="DeleteHost()">Elimina</button>
+            </div>
+        </div>
     </div>
 </div>
 
 <style>
-    tr.hover:hover{
-        background-color: rgb(45,206,137, .1);
-        cursor: pointer;
-
-    }
+     tbody tr:hover{
+            background-color: rgb(61,210,255, .1);
+            cursor: pointer;
+        }
 </style>
 @section Scripts
 {
@@ -98,7 +89,7 @@
 
     <script>
             $(document).ready( function () {
-            table = $('#table-reservations').DataTable({
+            table = $('#table-staffs').DataTable({
                 "language": {
                     "rowReorder": {
                         selector: 'td:nth-child(2)'
@@ -119,14 +110,43 @@
                 },
                 "columnDefs": [
                     { "searchable": true, "orderable": true, "targets": 0 },
-                    { "searchable": false, "orderable": true, "targets": 1, type: 'date-eu' },
-                    { "searchable": false, "orderable": true, "targets": 2, type: 'date-eu' },
-                    { "searchable": true, "orderable": true, "targets": 3 },
-                    { "searchable": false, "orderable": true, "targets": 4 },
-                    { "searchable": true, "orderable": true, "targets": 5 },
+                    { "searchable": true, "orderable": true, "targets": 1 },
                 ]
             });
         });
 
+        $(document).on("click", ".del-staff", function () {
+             var staffId = $(this).attr('id');
+             $(".modal-body #modal-addrem-staffId").val( parseInt(staffId) );
+        });
+        
+        function SetDataStaffId(elementName, staffId){
+            $(elementName).data("staffId", staffId );
+        }
+        
+        function DeleteHost(){
+            var staffId = $("#confirm-del-modal").data("staffId");
+            $.ajax({
+                url: '@Url.Action("DeleteStaffHost", "Staff")?' + $.param({"staffId": staffId}),
+                type: 'GET',
+                success: function (data) {
+                    if (data.result == true){
+                        table.row($("tr#staff-" + staffId)).remove().draw();
+                        $("#confirm-del-modal").modal('toggle');
+                    }
+                },
+            
+                error: function (data){
+                }
+            });
+            $("#confirm-del-modal").modal('toggle');
+        }
     </script>
+
+    <script>
+    function GoToDetail(Id){
+        window.location.href = "/Staff/InfoHost?id=" + Id;
+    }
+    </script>
+
 }
