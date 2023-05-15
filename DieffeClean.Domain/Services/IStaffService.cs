@@ -12,6 +12,5 @@ public interface IStaffService
 
     public bool DeleteStaffById(string staffId);
 
-
-
+    public void CreateUserApartments(List<UserApartment> userApartments);
 }

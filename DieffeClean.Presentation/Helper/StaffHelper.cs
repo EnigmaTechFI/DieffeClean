@@ -7,6 +7,7 @@ using DieffeClean.Utils.Email;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using NETCore.MailKit.Core;
+using NLog;
 
 namespace DieffeClean.Presentation.Helper;
 
@@ -16,8 +17,7 @@ public class StaffHelper
     private readonly IApartmentService _apartmentService;
     private readonly UserManager<MyUser> _userManager;
     private readonly IEmailSender _emailSender;
-
-
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
     public StaffHelper(IStaffService staffService, IEmailSender emailSender, IApartmentService apartmentService, UserManager<MyUser> userManager)
     {
@@ -29,12 +29,11 @@ public class StaffHelper
 
     public ListStaffViewModel GetStaff(string role)
     {
-        var staffList1 = _staffService.GetStaff();
-        var staffList2 = staffList1.Where(s => _userManager.IsInRoleAsync(s, role).Result).ToList();
+        var staffList = _staffService.GetStaff().Where(s => _userManager.IsInRoleAsync(s, role).Result).ToList();
 
         return new ListStaffViewModel()
         {
-            Staffs = staffList2
+            Staffs = staffList
         };
     }
 
@@ -74,12 +73,28 @@ public class StaffHelper
                     _userManager.AddToRolesAsync(newUser, new[] { Roles.CleaningUser }).GetAwaiter().GetResult();
                 }
 
-                _staffService.SetUserApartments(newUser.Id, model.SelectedApartments);
-                
+                var userApartments = new List<UserApartment>();
+                foreach (var apartmentId in model.SelectedApartments)
+                {
+                    userApartments.Add(new UserApartment()
+                    {
+                        MyUserId = newUser.Id,
+                        ApartmentId = apartmentId
+                    });
+                }
+                _staffService.CreateUserApartments(userApartments);
+
                 var message = new Message(new (string, string)[] { (model.Staff.UserName, model.Staff.Email) }, "Nuovo account", "Nuovo account");
                 List<(string, string)> replacer = new List<(string, string)> { ("[user]", model.Staff.Email) , ("[password]", password)};
                 var currentPath = Directory.GetCurrentDirectory();
-                await _emailSender.SendEmailAsync(message, currentPath + "/wwwroot/MailTemplate/new-account.html", replacer);
+                try
+                {
+                    await _emailSender.SendEmailAsync(message, currentPath + "/wwwroot/MailTemplate/new-account.html", replacer);
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e, e.Message);
+                }
             }
             
         }

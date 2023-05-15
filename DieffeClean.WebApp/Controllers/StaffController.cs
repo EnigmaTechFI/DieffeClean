@@ -83,7 +83,7 @@ public class StaffController : Controller
 
         try
         {
-            _staffHelper.NewStaff(model, "Admin");
+            await _staffHelper.NewStaff(model, "Admin");
             return RedirectToAction("HostList");
         }
         catch (Exception e)
@@ -97,7 +97,7 @@ public class StaffController : Controller
     {
         try
         {
-            _staffHelper.NewStaff(model, "CleaningUser");
+            await _staffHelper.NewStaff(model, "CleaningUser");
             return RedirectToAction("CleanList");
         }
         catch (Exception e)

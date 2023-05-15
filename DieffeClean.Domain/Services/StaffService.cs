@@ -36,9 +36,10 @@ public class StaffService : IStaffService
     
     public MyUser GetStaffById(string id)
     {
-        return _dbContext.MyUsers.Include(s => s.UserApartments)
+        return _dbContext.MyUsers
+            .Include(s => s.UserApartments)
             .ThenInclude(p => p.Apartment)
-            .SingleOrDefault<DieffeClean.Domain.Model.MyUser>(u => u.Id == id);
+            .SingleOrDefault(u => u.Id == id);
     }
     
     public bool DeleteStaffById(string staffId)
@@ -53,4 +54,9 @@ public class StaffService : IStaffService
         return false;
     }
 
+    public void CreateUserApartments(List<UserApartment> userApartments)
+    {
+        _dbContext.UserApartments.AddRange(userApartments);
+        _dbContext.SaveChanges();
+    }
 }
