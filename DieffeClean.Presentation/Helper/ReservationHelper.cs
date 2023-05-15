@@ -103,7 +103,7 @@ public class ReservationHelper
     {
         return new CalendarViewModel()
         {
-            Reservations = _reservationService.GetAllByNow()
+            Apartments = _apartmentService.GetAllWithReservationsByNow()
         };
     }
 }

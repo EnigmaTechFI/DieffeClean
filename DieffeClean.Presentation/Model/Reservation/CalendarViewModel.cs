@@ -2,5 +2,5 @@
 
 public class CalendarViewModel
 {
-    public List<Domain.Model.Reservation> Reservations { get; set; }
+    public List<Domain.Model.Apartment> Apartments { get; set; }
 }

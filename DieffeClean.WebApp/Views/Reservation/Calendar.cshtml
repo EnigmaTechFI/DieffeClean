@@ -1,21 +1,35 @@
-
+@using NuGet.Protocol
+@model DieffeClean.Presentation.Model.Reservation.CalendarViewModel
 @{
     ViewData["Title"] = "Calendario";
 }
-
-<div class="fw-bold col app-calendar-content">
-    <div class="card shadow-none border-0">
+<div class="header pb-6 d-flex align-items-center bg-dieffe" style="min-height: 150px; ">
+      <!-- Mask -->
+    <span class="mask  opacity-8"></span>
+    <!-- Header container -->
+    <div class="container-fluid d-flex align-items-center">
+        <div class="row">
+            <div class="justify-content-between d-flex">
+                <div><h2 style="width: 200px; color: white;">Calendario</h2></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid mt--6">
+    <div class="card">
         <div class="card-body pb-0">
         <!-- FullCalendar -->
             <div id="myTimeline">
                   <ul class="timeline-events">
                     @{
                         var index = 1;
-                        foreach (var item in Model.Locations)
+                        foreach (var item in Model.Apartments)
                         {
                             @foreach(var res in item.Reservations)
                             {
-                                <li data-timeline-node="{extend:'{\'res_id\':@res.Id, \'loc_id\':@item.LocationId}', start: '@res.CheckIn.ToString("yyyy-MM-dd HH:mm")', end: '@res.CheckOut.ToString("yyyy-MM-dd HH:mm")', row: @index }">
+                                var res_id = res.Id.ToJson();
+                                var loc_id = item.Id.ToJson();
+                                <li data-timeline-node="{extend:'{\'res_id\': @res_id, \'loc_id\': @loc_id}', start: '@res.CheckIn.ToString("yyyy-MM-dd HH:mm")', end: '@res.CheckOut.ToString("yyyy-MM-dd HH:mm")', row: @index }">
                                     <span class="event-label">@res.GuestFullName</span>
                                 </li>
                             }
@@ -32,31 +46,161 @@
 <div class="modal fade" id="reservationDetail" tabindex="-1" aria-modal="true" role="dialog" style="display: none;">
     <div class="modal-dialog modal-simple modal-enable-otp modal-dialog-centered">
         <div class="modal-content p-3 p-md-5">
-        <div class="modal-body">
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            <div class="text-center mb-2">
-                <p class="mb-2" id="locationName">Verify Your Mobile Number for SMS</p>
-                <h3 class="mb-4" id="reservationTitle">Enable One Time Password</h3>
+            <div class="modal-body">
+                @* <button style="color: grey; float: right; border-color: white; background-color: white;" type="button" data-bs-dismiss="modal" aria-label="Close">X</button> *@
+                <div class="text-center mb-2">
+                    <h2 class="mb-2" id="locationName"></h2>
+                    <p class="mb-4" id="locationAddress"></p>
+                </div>
+                <div class="d-flex m-2">
+                    <strong>Ospite: &nbsp;</strong><p id="nameGuest"></p>
+                </div>
+                <div class="d-flex m-2">
+                    <strong>Email ospite: &nbsp;</strong><p id="mailGuest"></p>
+                </div>
+                <div class="d-flex m-2">
+                    <strong>Telefono ospite: &nbsp;</strong><p id="telGuest"></p>
+                </div>
+                <div class="d-flex m-2">
+                    <strong>Data Check-In: &nbsp;</strong><p id="checkin"></p>
+                </div>
+                <div class="d-flex m-2">
+                    <strong>Data Check-Out: &nbsp;</strong><p id="checkout"></p>
+                </div>
             </div>
-            <div class="d-flex m-2">
-                <strong>Ospite: &nbsp;</strong><p id="nameGuest"></p>
-            </div>
-            <div class="d-flex m-2">
-                <strong>Email ospite: &nbsp;</strong><p id="mailGuest"></p>
-            </div>
-            <div class="d-flex m-2">
-                <strong>Telefono ospite: &nbsp;</strong><p id="telGuest"></p>
-            </div>
-            <div class="d-flex m-2">
-                <strong>Data Check-In: &nbsp;</strong><p id="checkin"></p>
-            </div>
-            <div class="d-flex m-2">
-                <strong>Data Check-Out: &nbsp;</strong><p id="checkout"></p>
-            </div>
-            <div class="col-12 text-end">
-                <a id="view" class="btn btn-label-primary waves-effect" data-bs-dismiss="modal" aria-label="Close">Visualizza</a>
-            </div>
-        </div>
         </div>
     </div>
 </div>
+
+
+@section Scripts
+{
+    <script src="https://cdn.jsdelivr.net/gh/ka215/jquery.timeline@main/dist/jquery.timeline.min.js"></script>
+    <script>
+        let model = @(Html.Raw(Json.Serialize(Model)))
+        let reservation
+        let _list = []
+
+        for (let index in model.apartments) {
+            _list.push("&nbsp;" + model.apartments[index].name + "&nbsp;")
+        }   
+
+        let calendar = $('#myTimeline');
+        calendar.Timeline({
+            scale: 'day',
+            rows: @Model.Apartments.Count,
+            minGridSize: 100,
+            startDatetime: new Date(),
+            rangeAlign: 'left',
+            headline: {
+                display: true,
+                range:   false,
+                local:   'en-US',
+                format:  {
+                    timeZone: 'UTC',
+                    hour12: false,
+                }
+            },
+            ruler: {
+                top: {
+                    lines: [ 'year', 'month', 'day' ],
+                    format: {
+                        timeZone: 'UTC',
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                    }
+                },
+                bottom: {
+                    lines: [ 'weekday' ],
+                    format: {
+                        timeZone: 'UTC',
+                        weekday: 'narrow',
+                    }
+                }
+            },
+            sidebar: {
+                sticky: true,
+                list : _list
+            }
+        }).Timeline('openEvent', function(targetEvent, viewerContents) {
+            $('#reservationDetail').modal('show')
+            var apartment = model.apartments.filter(obj => {
+              return obj.id === targetEvent.extend.loc_id
+            })
+            reservation = apartment[0].reservations.filter(obj => {
+              return obj.id === targetEvent.extend.res_id
+            })
+            document.getElementById('telGuest').textContent = reservation[0].phoneNumber
+            document.getElementById('nameGuest').textContent = reservation[0].guestFullName
+            document.getElementById('mailGuest').textContent = reservation[0].email
+            document.getElementById('checkin').textContent = new Date(reservation[0].checkIn).toLocaleString()
+            document.getElementById('checkout').textContent = new Date(reservation[0].checkOut).toLocaleString()
+            document.getElementById('locationName').textContent = apartment[0].name
+            document.getElementById('locationAddress').textContent = apartment[0].address + ", " + apartment[0].zipCode + " - " + apartment[0].city 
+        })
+
+        function detailPage() {
+            window.location.href = "/detail/" + reservation[0].id
+        }
+    </script>
+}
+
+@section Style
+{
+    <link href="https://cdn.jsdelivr.net/gh/ka215/jquery.timeline@main/dist/jquery.timeline.min.css" rel="stylesheet">
+    <style>
+    
+        .jqtl-ruler-line-item{
+            font-size: 18px !important;
+        }
+        .dark{
+            border: 1px solid #25293C !important; 
+            background-color: #2f3349 !important;
+        }
+        .dark1{
+            background-color: #2f3349 !important;
+        }
+        
+        .jqtl-container{
+            border-radius: 15px;
+        }
+
+        .jqtl-ruler-line-item > span {
+            font-family: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif; 
+        }
+
+        .jqtl-event-node{
+            border-color: #bbe9f2 !important;
+            background-color: #bbe9f2 !important;
+            margin-top: 2px;
+            margin-bottom: 2px;
+            border-radius: 25px !important;
+        }
+
+        .jqtl-event-node:hover{
+            background-color: #6dc8fa !important;
+            border-color: #6dc8fa !important;
+            color: white !important;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #6dc8fa;
+            border-radius: 15px;
+        }
+
+        ::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgb(0 0 0 / 30%);
+            background-color: #bbe9f2;
+            border-radius: 15px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            background-color: #dadcf9;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+
+    </style>
+}

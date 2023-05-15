@@ -8,4 +8,5 @@ public interface IApartmentService
     public Apartment GetById(Guid id);
     void Create(Apartment apartment);
     void Update(Apartment apartment);
+    List<Apartment> GetAllWithReservationsByNow();
 }

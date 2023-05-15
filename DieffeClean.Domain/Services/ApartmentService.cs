@@ -1,5 +1,6 @@
 ﻿using DieffeClean.Domain.Data;
 using DieffeClean.Domain.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace DieffeClean.Domain.Services;
 
@@ -32,5 +33,10 @@ public class ApartmentService : IApartmentService
     {
         _dbContext.Apartments.Update(apartment);
         _dbContext.SaveChanges();
+    }
+
+    public List<Apartment> GetAllWithReservationsByNow()
+    {
+        return _dbContext.Apartments.Include(s => s.Reservations.Where(s => s.CheckOut >= DateTime.Now)).ToList();
     }
 }
