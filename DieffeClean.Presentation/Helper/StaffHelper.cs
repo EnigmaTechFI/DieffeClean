@@ -46,7 +46,7 @@ public class StaffHelper
         };
     }
     
-    public async Task NewStaff(NewStaffViewModel model, string role, string[] SelectedApartments)
+    public async Task NewStaff(NewStaffViewModel model, string role)
     {
         
         ValidateEmail(model.Staff.Email);
@@ -74,7 +74,7 @@ public class StaffHelper
                     _userManager.AddToRolesAsync(newUser, new[] { Roles.CleaningUser }).GetAwaiter().GetResult();
                 }
 
-                _staffService.SetUserApartments(newUser.Id, SelectedApartments);
+                _staffService.SetUserApartments(newUser.Id, model.SelectedApartments);
                 
                 var message = new Message(new (string, string)[] { (model.Staff.UserName, model.Staff.Email) }, "Nuovo account", "Nuovo account");
                 List<(string, string)> replacer = new List<(string, string)> { ("[user]", model.Staff.Email) , ("[password]", password)};
@@ -140,5 +140,10 @@ public class StaffHelper
     {
         _staffService.DeleteStaffById(staffId);
     }
-    
+
+    public NewStaffViewModel GetNewStaffViewModelException(NewStaffViewModel model)
+    {
+        model.Apartments = _apartmentService.GetAll();
+        return model;
+    }
 }

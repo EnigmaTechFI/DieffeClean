@@ -52,4 +52,13 @@ public class ReservationService : IReservationService
     {
         return _dbContext.Reservations.Where(s => s.CheckOut >= DateTime.Now).ToList();
     }
+
+    public List<Reservation> GetAllByUserId(string userId)
+    {
+        return _dbContext.Reservations
+            .Include(s => s.Apartment)
+            .ThenInclude(s => s.UserApartments)
+            .Where(s => s.Apartment.UserApartments.Any(s => s.MyUserId == userId))
+            .ToList();
+    }
 }

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Web;
+using NToastNotify;
 
 var logger = LogManager.Setup()
     .LoadConfigurationFromFile("NLog.config")
@@ -65,7 +66,14 @@ try
         .AddDefaultTokenProviders();
 
     // Add services to the container.
-    builder.Services.AddControllersWithViews()
+    builder.Services.AddControllersWithViews().AddNToastNotifyToastr(new ToastrOptions()
+        {
+            ProgressBar = true,
+            PositionClass = ToastPositions.TopRight,
+            CloseButton = true,
+            TimeOut = 5000
+            
+        })
         .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles)
         .AddRazorRuntimeCompilation();
     
@@ -106,6 +114,8 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
 
+    app.UseNToastNotify();
+    
     app.MapControllerRoute(
         name: "default",
         pattern: "{controller=Auth}/{action=Login}");

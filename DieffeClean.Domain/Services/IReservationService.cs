@@ -11,4 +11,5 @@ public interface IReservationService
     Reservation GetReservationById(Guid id);
     void Update(Reservation reservation);
     List<Reservation> GetAllByNow();
+    List<Reservation> GetAllByUserId(string userId);
 }

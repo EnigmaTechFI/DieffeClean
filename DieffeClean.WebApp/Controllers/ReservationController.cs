@@ -1,52 +1,77 @@
-﻿using DieffeClean.Presentation.Helper;
+﻿using DieffeClean.Domain.Constants;
+using DieffeClean.Domain.Model;
+using DieffeClean.Presentation.Helper;
 using DieffeClean.Presentation.Model.Reservation;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NLog;
+using NToastNotify;
 
 namespace DieffeClean.WebApp.Controllers;
 
 public class ReservationController : Controller
 {
     private readonly ReservationHelper _reservationHelper;
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private readonly UserManager<MyUser> _userManager;
+    private readonly IToastNotification _toastNotification;
 
-    public ReservationController(ReservationHelper reservationHelper)
+    public ReservationController(ReservationHelper reservationHelper, UserManager<MyUser> userManager, IToastNotification toastNotification)
     {
         _reservationHelper = reservationHelper;
+        _userManager = userManager;
+        _toastNotification = toastNotification;
     }
     
+    [Authorize(Roles = Roles.SuperAdmin + ","+ Roles.Admin)]
     [HttpGet]
-    public IActionResult Create()
+    public async Task<IActionResult> Create()
     {
-        return View(_reservationHelper.GetCreateReservationViewModel());
+        try
+        {
+            return View(await _reservationHelper.GetCreateReservationViewModel(await _userManager.GetUserAsync(User)));
+        }
+        catch (Exception e)
+        {
+            Logger.Error(e, e.Message);
+            return RedirectToAction("List");
+        }
     }
     
+    [Authorize(Roles = Roles.SuperAdmin + ","+ Roles.Admin)]
     [HttpPost]
-    public IActionResult Create(CreateReservationViewModel model)
+    public async Task<IActionResult> Create(CreateReservationViewModel model)
     {
         try
         {
             _reservationHelper.CreateReservation(model);
+            _toastNotification.AddSuccessToastMessage("Prenotazione creata correttamente.");
             return RedirectToAction("List");
         }
         catch (Exception e)
         {
-            return View(_reservationHelper.GetCreateReservationViewModelException(model));
+            _toastNotification.AddErrorToastMessage(e.Message);
+            Logger.Error(e, e.Message);
+            return View(await _reservationHelper.GetCreateReservationViewModelException(model, await _userManager.GetUserAsync(User)));
         }
     }
-    
+    [Authorize(Roles = Roles.SuperAdmin + ","+ Roles.Admin + ","+ Roles.CleaningUser)]
     [HttpGet]
-    public IActionResult List()
+    public async Task<IActionResult> List()
     {
         try
         {
-            return View(_reservationHelper.GetReservations());
+            return View(await _reservationHelper.GetReservations(await _userManager.GetUserAsync(User)));
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            throw;
+            Logger.Error(e, e.Message);
+            _toastNotification.AddErrorToastMessage("Sessione scaduta.");
+            return RedirectToAction("Logout", "Auth");
         }
     }
-    
+    [Authorize(Roles = Roles.SuperAdmin + ","+ Roles.Admin + ","+ Roles.CleaningUser)]
     [HttpGet]
     public IActionResult Info(Guid id)
     {
@@ -56,16 +81,19 @@ public class ReservationController : Controller
         }
         catch (Exception e)
         {
+            Logger.Error(e, e.Message);
+            _toastNotification.AddErrorToastMessage(e.Message);
             return RedirectToAction("List");
         }
     }
     
+    [Authorize(Roles = Roles.SuperAdmin + ","+ Roles.Admin)]
     [HttpGet]
-    public IActionResult Update(Guid id)
+    public async Task<IActionResult> Update(Guid id)
     {
         try
         {
-            return View(_reservationHelper.GetUpdateReservationViewModel(id));
+            return View(await _reservationHelper.GetUpdateReservationViewModel(id, await _userManager.GetUserAsync(User)));
         }
         catch (Exception e)
         {
@@ -73,31 +101,37 @@ public class ReservationController : Controller
         }
     }
     
+    [Authorize(Roles = Roles.SuperAdmin + ","+ Roles.Admin)]
     [HttpPost]
-    public IActionResult Update(CreateReservationViewModel model)
+    public async Task<IActionResult> Update(CreateReservationViewModel model)
     {
         try
         {
-            
             _reservationHelper.UpdateReservation(model);
+            _toastNotification.AddSuccessToastMessage("Prenotazione aggiornata correttamente.");
             return RedirectToAction("List");
         }
         catch (Exception e)
         {
-            return View(_reservationHelper.GetCreateReservationViewModelException(model));
+            _toastNotification.AddErrorToastMessage(e.Message);
+            Logger.Error(e, e.Message);
+            return View(await _reservationHelper.GetCreateReservationViewModelException(model, await _userManager.GetUserAsync(User)));
         }
     }
     
+    [Authorize(Roles = Roles.SuperAdmin + ","+ Roles.Admin + ","+ Roles.CleaningUser)]
     [HttpGet]
-    public IActionResult Calendar()
+    public async Task<IActionResult> Calendar()
     {
         try
         {
-            return View(_reservationHelper.GetCalendarViewModel());
+            return View(await _reservationHelper.GetCalendarViewModel(await _userManager.GetUserAsync(User)));
         }
         catch (Exception e)
         {
-            throw;
+            Logger.Error(e, e.Message);
+            _toastNotification.AddErrorToastMessage("Sessione scaduta.");
+            return RedirectToAction("Logout", "Auth");
         }
     }
     

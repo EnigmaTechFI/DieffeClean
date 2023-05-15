@@ -9,4 +9,6 @@ public interface IApartmentService
     void Create(Apartment apartment);
     void Update(Apartment apartment);
     List<Apartment> GetAllWithReservationsByNow();
+    List<Apartment> GetAllWithReservationsByNowByUserId(string userId);
+    List<Apartment> GetAllByUserId(string userId);
 }

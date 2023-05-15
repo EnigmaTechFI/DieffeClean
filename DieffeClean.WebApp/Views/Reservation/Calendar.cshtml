@@ -67,6 +67,9 @@
                 <div class="d-flex m-2">
                     <strong>Data Check-Out: &nbsp;</strong><p id="checkout"></p>
                 </div>
+                <div class="d-flex m-2">
+                    <strong>Note: &nbsp;</strong><p id="resnote"></p>
+                </div>
             </div>
         </div>
     </div>
@@ -137,6 +140,7 @@
             document.getElementById('checkin').textContent = new Date(reservation[0].checkIn).toLocaleString()
             document.getElementById('checkout').textContent = new Date(reservation[0].checkOut).toLocaleString()
             document.getElementById('locationName').textContent = apartment[0].name
+            document.getElementById('resnote').textContent = reservation[0].note
             document.getElementById('locationAddress').textContent = apartment[0].address + ", " + apartment[0].zipCode + " - " + apartment[0].city 
         })
 

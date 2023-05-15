@@ -1,4 +1,6 @@
-﻿@model DieffeClean.Presentation.Model.Apartment.ListApartmentsViewModel
+﻿@using DieffeClean.Domain.Constants
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model DieffeClean.Presentation.Model.Apartment.ListApartmentsViewModel
 
 @{
     ViewData["Title"] = "Lista Appartamenti";
@@ -25,9 +27,12 @@
                 <div class="col-8">
                     <h3 class="mb-0">Lista appartamenti</h3>
                 </div>
-                <div class="col-4 text-right">
-                    <a asp-action="Create" asp-controller="Apartment" class="btn btn-sm btn-dieffe">Nuovo appartamento</a>
-                </div>
+                @if (User.IsInRole(Roles.SuperAdmin))
+                {
+                    <div class="col-4 text-right">
+                        <a asp-action="Create" asp-controller="Apartment" class="btn btn-sm btn-dieffe">Nuovo appartamento</a>
+                    </div>
+                }
             </div>
         </div>
         <div class="card-body">

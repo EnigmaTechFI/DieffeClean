@@ -1,11 +1,14 @@
-﻿using DieffeClean.Domain.Model;
+﻿using DieffeClean.Domain.Constants;
+using DieffeClean.Domain.Model;
 using DieffeClean.Presentation.Helper;
 using DieffeClean.Presentation.Model.Staff;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DieffeClean.WebApp.Controllers;
 
+[Authorize(Roles = Roles.SuperAdmin)]
 public class StaffController : Controller
 {
     private readonly StaffHelper _staffHelper;
@@ -75,26 +78,26 @@ public class StaffController : Controller
     }
     
     [HttpPost]
-    public async Task<IActionResult> NewHost(NewStaffViewModel model, string[] SelectedApartments)
+    public async Task<IActionResult> NewHost(NewStaffViewModel model)
     {
 
         try
         {
-            _staffHelper.NewStaff(model, "Admin", SelectedApartments);
+            _staffHelper.NewStaff(model, "Admin");
             return RedirectToAction("HostList");
         }
         catch (Exception e)
         {
-            return RedirectToAction("NewHost");
+            return View(_staffHelper.GetNewStaffViewModelException(model));
         }
     }
     
     [HttpPost]
-    public async Task<IActionResult> NewClean(NewStaffViewModel model, string[] SelectedApartments)
+    public async Task<IActionResult> NewClean(NewStaffViewModel model)
     {
         try
         {
-            _staffHelper.NewStaff(model, "CleaningUser", SelectedApartments);
+            _staffHelper.NewStaff(model, "CleaningUser");
             return RedirectToAction("CleanList");
         }
         catch (Exception e)

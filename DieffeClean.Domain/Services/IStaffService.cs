@@ -6,7 +6,7 @@ public interface IStaffService
 {
     public List<MyUser> GetStaff();
 
-    public void SetUserApartments(string UserId, string[] Apartaments);
+    public void SetUserApartments(string UserId, List<Guid>  Apartaments);
 
     public MyUser GetStaffById(string id);
 

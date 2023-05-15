@@ -10,7 +10,7 @@ public class Reservation
     public string GuestFullName => this.GuestFirstName + " " + this.GuestLastName;
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
-    public string Note { get; set; }
+    public string? Note { get; set; }
     public DateTime CheckIn { get; set; }
     public bool CheckInAllDay { get; set; }
     public DateTime CheckOut { get; set; }
