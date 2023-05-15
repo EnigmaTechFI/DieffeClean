@@ -18,22 +18,6 @@ public class StaffService : IStaffService
         return _dbContext.MyUsers.Include(s => s.UserApartments).ThenInclude(p => p.Apartment).ToList();
     }
 
-    public void SetUserApartments(string UserId, List<Guid> Apartaments)
-    {
-        
-        foreach (var apartmentId in Apartaments)
-        {
-            UserApartment Apart = new UserApartment();
-            Apart.MyUserId = UserId;
-            Apart.ApartmentId = apartmentId;
-            
-            _dbContext.UserApartments.Add(Apart);
-        }
-        
-        _dbContext.SaveChanges();
-
-    }
-    
     public MyUser GetStaffById(string id)
     {
         return _dbContext.MyUsers
@@ -52,6 +36,18 @@ public class StaffService : IStaffService
             return true;
         }
         return false;
+    }
+
+    public void UpdateUserApartments(string UserId, List<UserApartment> userApartments)
+    {
+
+        var userApartmentsToDelete = _dbContext.UserApartments.Where(ua => ua.MyUserId == UserId);
+        _dbContext.UserApartments.RemoveRange(userApartmentsToDelete);
+        _dbContext.SaveChanges();
+
+        _dbContext.UserApartments.AddRange(userApartments);
+        _dbContext.SaveChanges();
+        
     }
 
     public void CreateUserApartments(List<UserApartment> userApartments)

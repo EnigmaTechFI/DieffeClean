@@ -101,7 +101,6 @@ public class ReservationHelper
         });
         if (!dateIntervalIsValid)
             throw new Exception("Prenotazione esistente per le date inserite.");
-            
     }
 
     public async Task<CreateReservationViewModel> GetCreateReservationViewModelException(CreateReservationViewModel model, MyUser user)

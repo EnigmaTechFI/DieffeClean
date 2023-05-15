@@ -70,7 +70,7 @@
             <div class="modal-body">Sei sicuro di voler eliminare questo account?</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Annulla</button>
-                <button class="btn btn-danger" onclick="DeleteHost()">Elimina</button>
+                <button class="btn btn-danger" onclick="DeleteClean()">Elimina</button>
             </div>
         </div>
     </div>
@@ -121,13 +121,13 @@
         });
         
         function SetDataStaffId(elementName, staffId){
-            $(elementName).data("staffId", staffId );
+            $(elementName).data("staffId", staffId);
         }
         
-        function DeleteHost(){
+        function DeleteClean(){
             var staffId = $("#confirm-del-modal").data("staffId");
             $.ajax({
-                url: '@Url.Action("DeleteStaffHost", "Staff")?' + $.param({"staffId": staffId}),
+                url: '@Url.Action("DeleteStaffClean", "Staff")?' + $.param({"staffId": staffId}),
                 type: 'GET',
                 success: function (data) {
                     if (data.result == true){

@@ -23,6 +23,7 @@ public class ApartmentController : Controller
         _userManager = userManager;
         _toastNotification = toastNotification;
     }
+    
     [Authorize(Roles = Roles.SuperAdmin + ","+ Roles.Admin + ","+ Roles.CleaningUser)]
     [HttpGet]
     public async Task<IActionResult> List()
@@ -38,6 +39,7 @@ public class ApartmentController : Controller
             return RedirectToAction("Index", "Home");
         }
     }
+    
     [Authorize(Roles = Roles.SuperAdmin + ","+ Roles.Admin + ","+ Roles.CleaningUser)]
     [HttpGet]
     public IActionResult Info(Guid id)

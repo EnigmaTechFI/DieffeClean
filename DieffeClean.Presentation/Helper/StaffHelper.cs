@@ -49,6 +49,8 @@ public class StaffHelper
     {
         
         ValidateEmail(model.Staff.Email);
+        ValidateUser(model.Staff.UserName);
+
         
         var adm = _userManager.FindByEmailAsync(model.Staff.Email).Result;
         if (adm == null)
@@ -151,6 +153,14 @@ public class StaffHelper
         }
     }
 
+    private void ValidateUser(string user)
+    {
+        if (user.Contains(" "))
+        {
+            throw new Exception("Username non corretta, non ci possono essere spazi");
+        }
+    }
+
     public void DeleteStaff(string staffId)
     {
         _staffService.DeleteStaffById(staffId);
@@ -161,4 +171,20 @@ public class StaffHelper
         model.Apartments = _apartmentService.GetAll();
         return model;
     }
+    
+    public async Task UpdateStaff(string Id, NewStaffViewModel model)
+    {
+        
+        var userApartments = new List<UserApartment>();
+        foreach (var apartmentId in model.SelectedApartments)
+        {
+            userApartments.Add(new UserApartment()
+            {
+                MyUserId = Id,
+                ApartmentId = apartmentId
+            });
+        }
+        _staffService.UpdateUserApartments(Id, userApartments);
+    }
+    
 }
