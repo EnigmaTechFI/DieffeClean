@@ -1,0 +1,152 @@
+﻿@model DieffeClean.Presentation.Model.Staff.ListStaffViewModel
+
+@{
+    ViewData["Title"] = "Lista host";
+}
+<link rel="stylesheet" href="~/vendor/datatables.net-bs4/css/dataTables.bootstrap4.min.css"/>
+<div class="header pb-6 d-flex align-items-center bg-dieffe" style="min-height: 150px; ">
+      <!-- Mask -->
+    <span class="mask  opacity-8"></span>
+    <!-- Header container -->
+    <div class="container-fluid d-flex align-items-center">
+        <div class="row">
+            <div class="justify-content-between d-flex">
+                <div><h2 style="width: 200px; color: white;">Host</h2></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--6">
+
+    <div class="card">
+        <div class="card-header">
+            <div class="row align-items-center">
+                <div class="col-8">
+                    <h3 class="mb-0">Lista Host</h3>
+                </div>
+                <div class="col-4 text-right">
+                    <a asp-action="NewHost" asp-controller="Staff" class="btn btn-sm btn-dieffe">Nuovo host</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table align-items-center" id="table-staffs">
+                    <thead class="thead-light">
+                    <tr>
+                        <th>Username</th>
+                        <th>Mail</th>
+                        <th>Azioni</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var staff in Model.Staffs)
+                    {
+                        <tr>
+                            <td id="staff-@staff.Id" onclick="GoToDetail('@staff.Id')" id="staff-@staff.Id">@staff.UserName</td>
+                            <td id="staff-@staff.Id" onclick="GoToDetail('@staff.Id')" id="staff-@staff.Id">@staff.Email</td>
+                            <td>
+                            <i class="fas fa-trash fa-lg pl-2 del-staff" style="cursor: pointer; color: #6d767e;" id="@staff.Id" title="Elimina" data-toggle="modal" data-target="#confirm-del-modal" onclick="SetDataStaffId('#confirm-del-modal', '@staff.Id')"></i>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirm-del-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Conferma eliminazione</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">Sei sicuro di voler eliminare questo account?</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Annulla</button>
+                <button class="btn btn-danger" onclick="DeleteHost()">Elimina</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+     tbody tr:hover{
+            background-color: rgb(61,210,255, .1);
+            cursor: pointer;
+        }
+</style>
+@section Scripts
+{
+    <script src="~/vendor/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/vendor/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+
+    <script>
+            $(document).ready( function () {
+            table = $('#table-staffs').DataTable({
+                "language": {
+                    "rowReorder": {
+                        selector: 'td:nth-child(2)'
+                    },
+                    "responsive": true,
+                    "lengthMenu": "Mostra _MENU_ risultati per pagina",
+                    "zeroRecords": "Nessun risultato trovato",
+                    "info": "Pagina _PAGE_ di _PAGES_",
+                    "infoEmpty": "Nessun risultato disponibile",
+                    "infoFiltered": "(filtrato da _MAX_ risultati totali)",
+                    "search": "Ricerca:",
+                    "paginate": {
+                        "first": "Inizio",
+                        "previous": "<",
+                        "next": ">",
+                        "last": "Fine"
+                    },
+                },
+                "columnDefs": [
+                    { "searchable": true, "orderable": true, "targets": 0 },
+                    { "searchable": true, "orderable": true, "targets": 1 },
+                ]
+            });
+        });
+
+        $(document).on("click", ".del-staff", function () {
+             var staffId = $(this).attr('id');
+             $(".modal-body #modal-addrem-staffId").val( parseInt(staffId) );
+        });
+        
+        function SetDataStaffId(elementName, staffId){
+            $(elementName).data("staffId", staffId );
+        }
+        
+        function DeleteHost(){
+            var staffId = $("#confirm-del-modal").data("staffId");
+            $.ajax({
+                url: '@Url.Action("DeleteStaffHost", "Staff")?' + $.param({"staffId": staffId}),
+                type: 'GET',
+                success: function (data) {
+                    if (data.result == true){
+                        table.row($("tr#staff-" + staffId)).remove().draw();
+                        $("#confirm-del-modal").modal('toggle');
+                    }
+                },
+            
+                error: function (data){
+                }
+            });
+            $("#confirm-del-modal").modal('toggle');
+        }
+    </script>
+
+    <script>
+    function GoToDetail(Id){
+        window.location.href = "/Staff/InfoHost?id=" + Id;
+    }
+    </script>
+
+}

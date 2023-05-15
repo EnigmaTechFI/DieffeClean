@@ -11,6 +11,6 @@ public static class RolesName
 {
     public static readonly Dictionary<string, string> RoleName = new Dictionary<string, string>()
     {
-        { "SuperAdmin", "SuperAdmin" }, { "Admin", "Admin" }, { "CleaningUser", "User" }
+        { "SuperAdmin", "SuperAdmin" }, { "Admin", "Admin" }, { "CleaningUser", "CleaningUser" }
     };
 }
