@@ -18,14 +18,14 @@ public class StaffService : IStaffService
         return _dbContext.MyUsers.Include(s => s.UserApartments).ThenInclude(p => p.Apartment).ToList();
     }
 
-    public void SetUserApartments(string UserId, string[] Apartaments)
+    public void SetUserApartments(string UserId, List<Guid> Apartaments)
     {
         
         foreach (var apartmentId in Apartaments)
         {
             UserApartment Apart = new UserApartment();
             Apart.MyUserId = UserId;
-            Apart.ApartmentId = new Guid(apartmentId);
+            Apart.ApartmentId = apartmentId;
             
             _dbContext.UserApartments.Add(Apart);
         }

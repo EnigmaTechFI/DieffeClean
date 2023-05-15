@@ -39,4 +39,21 @@ public class ApartmentService : IApartmentService
     {
         return _dbContext.Apartments.Include(s => s.Reservations.Where(s => s.CheckOut >= DateTime.Now)).ToList();
     }
+
+    public List<Apartment> GetAllWithReservationsByNowByUserId(string userId)
+    {
+        return _dbContext.Apartments
+            .Include(s => s.Reservations.Where(s => s.CheckOut >= DateTime.Now))
+            .Include(s => s.UserApartments)
+            .Where(s => s.UserApartments.Any(s => s.MyUserId == userId))
+            .ToList();
+    }
+
+    public List<Apartment> GetAllByUserId(string userId)
+    {
+        return _dbContext.Apartments
+            .Include(s => s.UserApartments)
+            .Where(s => s.UserApartments.Any(s => s.MyUserId == userId))
+            .ToList();
+    }
 }

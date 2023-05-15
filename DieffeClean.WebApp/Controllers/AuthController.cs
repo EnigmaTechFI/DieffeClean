@@ -4,6 +4,7 @@ using DieffeClean.Utils.Email;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
+using NToastNotify;
 
 namespace DieffeClean.WebApp.Controllers;
 
@@ -13,11 +14,14 @@ public class AuthController : Controller
     private readonly SignInManager<MyUser> _signInManager;
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
     private readonly IEmailSender _emailSender;
-    public AuthController(UserManager<MyUser> userManager, SignInManager<MyUser> signInManager, IEmailSender emailSender)
+    private readonly IToastNotification _toastNotification;
+
+    public AuthController(UserManager<MyUser> userManager, SignInManager<MyUser> signInManager, IEmailSender emailSender, IToastNotification toastNotification)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _emailSender = emailSender;
+        _toastNotification = toastNotification;
     }
 
     [HttpGet]
@@ -35,15 +39,15 @@ public class AuthController : Controller
 
             if (user == null)
             {
+                _toastNotification.AddErrorToastMessage("Email o password non corrette.");    
                 return View(model);
             }
             
             var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: false);
             if (result.Succeeded)
-            {
                 return RedirectToAction("Index", "Home");
-            }
-
+            
+            _toastNotification.AddErrorToastMessage("Email o password non corrette.");    
             return View(model);
         }
         catch(Exception ex)
@@ -66,14 +70,14 @@ public class AuthController : Controller
         {
             if (string.IsNullOrEmpty(email))
             {
-                //_notyfToastService.Error("Email non valida.");
+                _toastNotification.AddSuccessToastMessage("Se l'email inserita è presente nei nostri database, verrà inviata una mail per il ripristino della password.");    
                 return RedirectToAction("Login");
             }
  
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
             {
-                //_notyfToastService.Error("Nessun account trovato con questa email.");
+                _toastNotification.AddSuccessToastMessage("Se l'email inserita è presente nei nostri database, verrà inviata una mail per il ripristino della password.");    
                 return RedirectToAction("Login");
             }
 
@@ -84,7 +88,7 @@ public class AuthController : Controller
             var currentPath = Directory.GetCurrentDirectory();
             await _emailSender.SendEmailAsync(message, currentPath + "/wwwroot/MailTemplate/mail-reset-password.html", replacer);
             
-            //_notyfToastService.Success($"Mail inviata correttamente! (a { email })");
+            _toastNotification.AddSuccessToastMessage("Se l'email inserita è presente nei nostri database, verrà inviata una mail per il ripristino della password.");    
             return RedirectToAction("Login");
         }
         catch (Exception e)
@@ -114,7 +118,7 @@ public class AuthController : Controller
         if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(email))
         {
             Logger.Error($"Richiesta reset password (GET), nessun utente trovato con email: {email}");
-            //_notyfToastService.Error($"Nessun utente trovato con email: {email}");
+            _toastNotification.AddErrorToastMessage("Parametri mancanti.");    
             return RedirectToAction("Login");
         }
         
@@ -136,7 +140,7 @@ public class AuthController : Controller
         if (user == null)
         {
             Logger.Error($"Richiesta reset password (POST), nessun utente trovato con email: {model.Email}");
-            //_notyfToastService.Error($"Nessun utente trovato con email: {model.Email}");
+            _toastNotification.AddErrorToastMessage("La mail inserita non è presente nei nostri database.");    
             return View(model);
         }
             
@@ -147,8 +151,10 @@ public class AuthController : Controller
             {
                 ModelState.TryAddModelError(error.Code, error.Description);
             }
+            _toastNotification.AddErrorToastMessage(resetResult.Errors.FirstOrDefault().Description);    
             return View(model);
         }
+        _toastNotification.AddSuccessToastMessage("Password cambiata correttamente.");
         return RedirectToAction("Login");
     }
 }

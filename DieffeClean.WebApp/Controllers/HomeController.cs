@@ -1,6 +1,8 @@
 ﻿using DieffeClean.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using DieffeClean.Domain.Constants;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DieffeClean.WebApp.Controllers
 {
@@ -12,7 +14,7 @@ namespace DieffeClean.WebApp.Controllers
         {
             _logger = logger;
         }
-
+        [Authorize(Roles = Roles.SuperAdmin + ","+ Roles.Admin + ","+ Roles.CleaningUser)]
         public IActionResult Index()
         {
             return View();

@@ -70,7 +70,7 @@
                                 <div class="col-lg-3">
                                     <div class="form-group">
                                         <label class="form-control-label" for="input-cap">Codice Postale</label>
-                                        <input asp-for="Apartment.ZipCode" type="text" id="input-cap" class="form-control" required>
+                                        <input min="0" asp-for="Apartment.ZipCode" type="number" id="input-cap" class="form-control" required>
                                     </div>
                                 </div>
                             </div>

@@ -119,6 +119,9 @@ namespace DieffeClean.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("NumberGuests")
                         .HasColumnType("int");
 
