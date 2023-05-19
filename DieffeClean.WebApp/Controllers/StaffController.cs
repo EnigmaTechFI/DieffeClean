@@ -36,7 +36,7 @@ public class StaffController : Controller
         {
             _toastNotification.AddErrorToastMessage(e.Message);
             Logger.Error(e, e.Message);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Calendar", "Reservation");
         }
     }
     
@@ -52,7 +52,7 @@ public class StaffController : Controller
         {
             _toastNotification.AddErrorToastMessage(e.Message);
             Logger.Error(e, e.Message);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Calendar", "Reservation");
         }
     }
     
@@ -68,7 +68,7 @@ public class StaffController : Controller
         {
             _toastNotification.AddErrorToastMessage(e.Message);
             Logger.Error(e, e.Message);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Calendar", "Reservation");
         }
     }
     
@@ -84,7 +84,7 @@ public class StaffController : Controller
         {
             _toastNotification.AddErrorToastMessage(e.Message);
             Logger.Error(e, e.Message);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Calendar", "Reservation");
         }
     }
     

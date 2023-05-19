@@ -3,6 +3,7 @@ using DieffeClean.Domain.Constants;
 using DieffeClean.Domain.Model;
 using DieffeClean.Domain.Services;
 using DieffeClean.Presentation.Model.Reservation;
+using DieffeClean.Utils.Email;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
@@ -13,12 +14,18 @@ public class ReservationHelper
     private readonly IReservationService _reservationService;
     private readonly IApartmentService _apartmentService;
     private readonly UserManager<MyUser> _userManager;
+    private readonly IEmailSender _emailSender;
+    private readonly IStaffService _staffService;
 
-    public ReservationHelper(IReservationService reservationService, IApartmentService apartmentService, UserManager<MyUser> userManager)
+
+
+    public ReservationHelper(IReservationService reservationService, IStaffService staffService, IEmailSender emailSender, IApartmentService apartmentService, UserManager<MyUser> userManager)
     {
         _reservationService = reservationService;
         _apartmentService = apartmentService;
         _userManager = userManager;
+        _emailSender = emailSender;
+        _staffService = staffService;
     }
 
     public async Task<ListReservationViewModel> GetReservations(MyUser user)
@@ -46,12 +53,40 @@ public class ReservationHelper
         };
     }
 
-    public void CreateReservation(CreateReservationViewModel model)
+    public async void CreateReservation(CreateReservationViewModel model)
     {
         ParseDates(model);
         ValidateReservationDate(model.Reservation, DateTime.Now);
         ValidateReservation(model.Reservation);
         _reservationService.Create(model.Reservation);
+        
+        //Per ogni email di pulizie collegato alla reservation
+        var staffList = _staffService.GetStaff().Where(s => _userManager.IsInRoleAsync(s, "CleaningUser").Result).ToList();
+
+        for (int i = 0; i < staffList.Count; i++)
+        {
+            if (staffList[i].UserApartments.Any(s => s.ApartmentId == model.Reservation.Apartment.Id))
+            {
+                var message = new Message(new (string, string)[] { (staffList[i].UserName, staffList[i].Email) },
+                    "Nuova prenotazione", "Nuova penotazione");
+                List<(string, string)> replacer = new List<(string, string)>
+                {
+                    ("[apartment]", model.Reservation.Apartment.Name),
+                    ("[datain]", model.Reservation.CheckIn.ToString()),
+                    ("[dataout]", model.Reservation.CheckOut.ToString())
+                };
+                var currentPath = Directory.GetCurrentDirectory();
+                try
+                {
+                    await _emailSender.SendEmailAsync(message, currentPath + "/wwwroot/MailTemplate/new-reservation.html",
+                        replacer);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception("Emaildi notifica non inviata");
+                }
+            }
+        }
     }
 
     private void ValidateReservation(Reservation reservation)

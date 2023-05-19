@@ -95,7 +95,7 @@ public class StaffHelper
                 }
                 catch (Exception e)
                 {
-                    Logger.Error(e, e.Message);
+                    throw new Exception("Email non inviata");
                 }
             }
             

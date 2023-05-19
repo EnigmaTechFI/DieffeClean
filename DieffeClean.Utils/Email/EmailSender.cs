@@ -22,7 +22,7 @@ namespace DieffeClean.Utils.Email
         private MimeMessage CreateEmailMessage(Message message, string templatePATH, List<(string, string)> replacer)
         {
             var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress("noreply | Dieffe Clean", _emailConfig.From));
+            emailMessage.From.Add(new MailboxAddress("noreply | Swirclean", _emailConfig.From));
             emailMessage.To.AddRange(message.To);
             emailMessage.Subject = message.Subject;
             if (!string.IsNullOrEmpty(templatePATH))
