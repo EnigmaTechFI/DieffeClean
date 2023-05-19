@@ -12,4 +12,5 @@ public interface IReservationService
     void Update(Reservation reservation);
     List<Reservation> GetAllByNow();
     List<Reservation> GetAllByUserId(string userId);
+    void Delete(Reservation reservation);
 }

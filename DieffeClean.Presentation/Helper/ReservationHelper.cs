@@ -146,4 +146,10 @@ public class ReservationHelper
             Apartments = apartment
         };
     }
+
+    public void DeleteReservation(Guid id)
+    {
+        var reservation = _reservationService.GetReservationById(id);
+        _reservationService.Delete(reservation);
+    }
 }

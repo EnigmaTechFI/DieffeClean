@@ -20,17 +20,43 @@ public class DbInitializer
                 roleResult = roleManager.CreateAsync(new IdentityRole(roleName)).Result;
         }
 
-        var adm1 = userManager.FindByEmailAsync("lorenzo.vettori11@gmail.com").Result;
+        var adm1 = userManager.FindByEmailAsync("fedefalconecescutti@hotmail.it").Result;
         if (adm1 == null)
         {
             adm1 = new MyUser
             {
-                UserName = "lore_vetto11",
-                Email = "lorenzo.vettori11@gmail.com",
+                UserName = "fedefalcone",
+                Email = "fedefalconecescutti@hotmail.it",
             };
 
-            IdentityResult result = userManager.CreateAsync(adm1, "Antani123!").Result;
+            IdentityResult result = userManager.CreateAsync(adm1, "SKhvs547!").Result;
             var addedRole = userManager.AddToRolesAsync(adm1, new[] { Roles.SuperAdmin}).Result;
+        }
+        
+        var adm2 = userManager.FindByEmailAsync("francescodaiuto91@gmail.com").Result;
+        if (adm2 == null)
+        {
+            adm2 = new MyUser
+            {
+                UserName = "francescodaiuto",
+                Email = "francescodaiuto91@gmail.com",
+            };
+
+            IdentityResult result = userManager.CreateAsync(adm2, "SKhvs547!").Result;
+            var addedRole = userManager.AddToRolesAsync(adm2, new[] { Roles.SuperAdmin}).Result;
+        }
+        
+        var adm3 = userManager.FindByEmailAsync("alessiocelo@gmail.com").Result;
+        if (adm3 == null)
+        {
+            adm3 = new MyUser
+            {
+                UserName = "alessiocelo",
+                Email = "alessiocelo@gmail.com",
+            };
+
+            IdentityResult result = userManager.CreateAsync(adm3, "SKhvs547!").Result;
+            var addedRole = userManager.AddToRolesAsync(adm3, new[] { Roles.SuperAdmin}).Result;
         }
 
         dbContext.SaveChanges();

@@ -87,6 +87,24 @@ public class ReservationController : Controller
         }
     }
     
+    [Authorize(Roles = Roles.SuperAdmin + ","+ Roles.Admin + ","+ Roles.CleaningUser)]
+    [HttpPost]
+    public IActionResult Delete(InfoReservationViewModel model)
+    {
+        try
+        {
+            _reservationHelper.DeleteReservation(model.Reservation.Id);
+            _toastNotification.AddSuccessToastMessage("Prenotazione cancellata correttamente.");
+            return RedirectToAction("List");
+        }
+        catch (Exception e)
+        {
+            Logger.Error(e, e.Message);
+            _toastNotification.AddErrorToastMessage("Errore durante la cancellazione. Si prega di riprovare.");
+            return RedirectToAction("Info", new { id = model.Reservation.Id});
+        }
+    }
+    
     [Authorize(Roles = Roles.SuperAdmin + ","+ Roles.Admin)]
     [HttpGet]
     public async Task<IActionResult> Update(Guid id)

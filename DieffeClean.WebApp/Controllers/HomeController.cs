@@ -14,11 +14,6 @@ namespace DieffeClean.WebApp.Controllers
         {
             _logger = logger;
         }
-        [Authorize(Roles = Roles.SuperAdmin + ","+ Roles.Admin + ","+ Roles.CleaningUser)]
-        public IActionResult Index()
-        {
-            return View();
-        }
 
         public IActionResult Privacy()
         {

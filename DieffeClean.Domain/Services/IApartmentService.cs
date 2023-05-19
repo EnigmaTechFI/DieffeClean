@@ -11,4 +11,5 @@ public interface IApartmentService
     List<Apartment> GetAllWithReservationsByNow();
     List<Apartment> GetAllWithReservationsByNowByUserId(string userId);
     List<Apartment> GetAllByUserId(string userId);
+    void Delete(Apartment apartment);
 }

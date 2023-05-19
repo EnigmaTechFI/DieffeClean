@@ -61,4 +61,10 @@ public class ReservationService : IReservationService
             .Where(s => s.Apartment.UserApartments.Any(s => s.MyUserId == userId))
             .ToList();
     }
+
+    public void Delete(Reservation reservation)
+    {
+        _dbContext.Reservations.Remove(reservation);
+        _dbContext.SaveChanges();
+    }
 }

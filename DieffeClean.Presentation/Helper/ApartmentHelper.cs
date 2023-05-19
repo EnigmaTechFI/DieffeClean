@@ -65,4 +65,10 @@ public class ApartmentHelper
             throw new Exception("Il codice postale deve essere un valore composto da 5 cifre");
 
     }
+
+    public void DeleteApartment(Guid id)
+    {
+        var apartment = _apartmentService.GetById(id);
+        _apartmentService.Delete(apartment);
+    }
 }

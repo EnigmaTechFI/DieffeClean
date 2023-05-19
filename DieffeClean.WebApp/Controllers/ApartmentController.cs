@@ -36,7 +36,7 @@ public class ApartmentController : Controller
         {
             _toastNotification.AddErrorToastMessage(e.Message);
             Logger.Error(e, e.Message);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Calendar", "Reservation");
         }
     }
     
@@ -112,6 +112,24 @@ public class ApartmentController : Controller
             _toastNotification.AddErrorToastMessage(e.Message);
             Logger.Error(e, e.Message);
             return View(model);
+        }
+    }
+
+    [Authorize(Roles = Roles.SuperAdmin)]
+    [HttpPost]
+    public IActionResult Delete(CreateApartmentViewModel model)
+    {
+        try
+        {
+            _apartmentHelper.DeleteApartment(model.Apartment.Id);
+            _toastNotification.AddSuccessToastMessage("Appartamento cancellato correttamente.");
+            return RedirectToAction("List");
+        }
+        catch (Exception e)
+        {
+            Logger.Error(e, e.Message);
+            _toastNotification.AddErrorToastMessage("Errore durante la cancellazione. Si prega di riprovare.");
+            return RedirectToAction("Info", new { id = model.Apartment.Id});
         }
     }
 }

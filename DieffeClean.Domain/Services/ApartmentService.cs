@@ -56,4 +56,10 @@ public class ApartmentService : IApartmentService
             .Where(s => s.UserApartments.Any(s => s.MyUserId == userId))
             .ToList();
     }
+
+    public void Delete(Apartment apartment)
+    {
+        _dbContext.Apartments.Remove(apartment);
+        _dbContext.SaveChanges();
+    }
 }

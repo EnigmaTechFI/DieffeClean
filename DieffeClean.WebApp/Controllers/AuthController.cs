@@ -45,7 +45,7 @@ public class AuthController : Controller
             
             var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: false);
             if (result.Succeeded)
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Calendar", "Reservation");
             
             _toastNotification.AddErrorToastMessage("Email o password non corrette.");    
             return View(model);
