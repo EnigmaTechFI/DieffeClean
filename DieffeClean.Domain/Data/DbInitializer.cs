@@ -20,13 +20,13 @@ public class DbInitializer
                 roleResult = roleManager.CreateAsync(new IdentityRole(roleName)).Result;
         }
 
-        var adm1 = userManager.FindByEmailAsync("fedefalconecescutti@hotmail.it").Result;
+        var adm1 = userManager.FindByEmailAsync("fedefalconecescutti@hotmail.com").Result;
         if (adm1 == null)
         {
             adm1 = new MyUser
             {
                 UserName = "fedefalcone",
-                Email = "fedefalconecescutti@hotmail.it",
+                Email = "fedefalconecescutti@hotmail.com",
             };
 
             IdentityResult result = userManager.CreateAsync(adm1, "SKhvs547!").Result;
