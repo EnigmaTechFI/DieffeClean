@@ -37,4 +37,13 @@
     <Folder Include="Views\Account\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\img\logo_white.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\img\logo_black.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
